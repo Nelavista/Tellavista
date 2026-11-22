@@ -34,11 +34,10 @@
 <div class="cm-stage{{ ' is-empty' if not data.has_data }}{{ ' no-center' if not data.map.center }}" id="cm-stage">
   <div id="cm-map" class="cm-map" role="application" aria-label="Campus map of {{ university.name }}"></div>
 
-  {% set plan = data.map.kind == 'plan' %}
   {% if data.map.center %}
   <div class="cm-fabs">
-    <button type="button" class="cm-fab" id="cm-locate" {{ 'hidden' if plan }} aria-label="Show my location" title="Show my location"><i class="ri-focus-3-line" aria-hidden="true"></i></button>
-    <button type="button" class="cm-fab" id="cm-layer" {{ 'hidden' if plan }} aria-label="Switch to map view" title="Map or satellite"><i class="ri-map-2-line" aria-hidden="true"></i></button>
+    <button type="button" class="cm-fab" id="cm-locate" aria-label="Show my location" title="Show my location"><i class="ri-focus-3-line" aria-hidden="true"></i></button>
+    <button type="button" class="cm-fab" id="cm-layer" aria-label="Switch to map view" title="Map or satellite"><i class="ri-map-2-line" aria-hidden="true"></i></button>
     <button type="button" class="cm-fab" id="cm-fit" aria-label="Show whole campus" title="Show whole campus"><i class="ri-fullscreen-exit-line" aria-hidden="true"></i></button>
   </div>
   {% endif %}
@@ -81,23 +80,19 @@
         <h2 class="cm-detail-name" id="cm-detail-name"></h2>
         <p class="cm-detail-where"><i class="ri-map-pin-line" aria-hidden="true"></i><span id="cm-detail-where"></span></p>
         <p class="cm-detail-desc" id="cm-detail-desc" hidden></p>
-        <p class="cm-detail-verify" id="cm-detail-verify" hidden><i class="ri-error-warning-line" aria-hidden="true"></i>This name is only partly legible on the campus plan, so it still needs checking.</p>
+        <p class="cm-detail-verify" id="cm-detail-verify" hidden><i class="ri-error-warning-line" aria-hidden="true"></i>This place&#39;s name or position still needs checking on the ground.</p>
         <div class="cm-route" id="cm-route" hidden>
           <i class="ri-walk-line" aria-hidden="true"></i>
           <span id="cm-route-text"></span>
           <button type="button" class="lx-btn lx-btn-ghost lx-btn-sm" id="cm-route-end">End</button>
         </div>
         <div class="cm-detail-actions">
-          <button type="button" class="lx-btn lx-btn-primary" id="cm-view" {{ '' if plan else 'hidden' }}><i class="ri-focus-3-line" aria-hidden="true"></i>View location</button>
-          <button type="button" class="lx-btn lx-btn-primary" id="cm-directions" {{ 'hidden' if plan }}><i class="ri-direction-line" aria-hidden="true"></i>Directions</button>
+          <button type="button" class="lx-btn lx-btn-primary" id="cm-directions"><i class="ri-direction-line" aria-hidden="true"></i>Directions</button>
           <button type="button" class="lx-btn lx-btn-secondary" id="cm-save" aria-pressed="false"><i class="ri-bookmark-line" aria-hidden="true"></i><span>Save</span></button>
           <button type="button" class="lx-btn lx-btn-secondary cm-icon-only" id="cm-share" aria-label="Share this place"><i class="ri-share-forward-line" aria-hidden="true"></i></button>
         </div>
-        <a class="cm-ext" id="cm-gmaps" {{ 'hidden' if plan }} target="_blank" rel="noopener noreferrer">Open in Google Maps<i class="ri-external-link-line" aria-hidden="true"></i></a>
+        <a class="cm-ext" id="cm-gmaps" target="_blank" rel="noopener noreferrer">Open in Google Maps<i class="ri-external-link-line" aria-hidden="true"></i></a>
       </article>
-      {% if plan %}
-      <p class="cm-source"><i class="ri-information-line" aria-hidden="true"></i>Drawn from the official campus plan. Positions follow the plan, not GPS, so directions and “near me” aren't available for this campus.</p>
-      {% endif %}
     </div>
     {% else %}
     <div class="cm-empty">

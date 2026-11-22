@@ -131,13 +131,19 @@ body.lx.cm-mapview { height: 100vh; height: 100dvh; overflow: hidden; display: f
   transition: transform .12s;
 }
 .cm-pin-wrap:hover .cm-pin { transform: scale(1.08); }
+.cm-compact .cm-pin:not(.is-active) { transform: scale(.78); }
+.cm-compact .cm-pin-wrap:hover .cm-pin:not(.is-active) { transform: scale(.86); }
 .cm-pin.is-active { font-size: 18px; border-width: 3px; box-shadow: 0 0 0 4px rgba(58, 95, 224, .35), 0 2px 8px rgba(0, 0, 0, .5); }
-.cm-label {
-  display: none; padding: 2px 7px; border: 0; border-radius: 6px; background: rgba(255, 255, 255, .95); color: #0f1420;
-  font: 600 .72rem/1.3 var(--lx-sans); box-shadow: none; white-space: nowrap; max-width: 180px; overflow: hidden; text-overflow: ellipsis;
+.leaflet-tooltip.cm-label {
+  display: none; padding: 0; border: 0; border-radius: 0; background: none; box-shadow: none;
+  font: 600 .72rem/1.2 var(--lx-sans); color: #1b2438; letter-spacing: .005em; white-space: nowrap;
+  text-shadow: 0 0 2px #fff, 0 0 2px #fff, 0 0 3px #fff, 0 0 4px #fff, 1px 1px 0 #fff, -1px -1px 0 #fff;
 }
-.cm-label::before { display: none; }
-.cm-labels-on .cm-label { display: block; }
+.leaflet-tooltip.cm-label::before { display: none; }
+.leaflet-tooltip.cm-label.cm-label-major { font-size: .8rem; font-weight: 700; color: #0f1a33; }
+.cm-compact .leaflet-tooltip.cm-label { font-size: .66rem; letter-spacing: -.005em; }
+.cm-on-satellite .leaflet-tooltip.cm-label { color: #fff; text-shadow: 0 0 2px #000, 0 0 3px #000, 0 0 4px rgba(0,0,0,.8), 1px 1px 0 #000; }
+.cm-show-t1 .leaflet-tooltip.cm-label.cm-t1, .cm-show-t2 .leaflet-tooltip.cm-label, .leaflet-tooltip.cm-label.is-sel { display: block; }
 .cm-me-wrap { background: none; border: 0; }
 .cm-me { display: block; width: 22px; height: 22px; border-radius: 50%; background: #3a5fe0; border: 3px solid #fff; box-shadow: 0 0 0 0 rgba(58, 95, 224, .5); animation: cm-pulse 2s infinite; box-sizing: border-box; }
 @keyframes cm-pulse { 0% { box-shadow: 0 0 0 0 rgba(58, 95, 224, .5); } 70% { box-shadow: 0 0 0 14px rgba(58, 95, 224, 0); } 100% { box-shadow: 0 0 0 0 rgba(58, 95, 224, 0); } }
@@ -226,15 +232,6 @@ body.lx.cm-mapview { height: 100vh; height: 100dvh; overflow: hidden; display: f
 
 .cm-detail-verify { display: flex; gap: 7px; align-items: flex-start; margin-top: 12px !important; padding: 9px 11px; border-radius: var(--lx-r2); background: var(--lx-amber-soft); color: var(--lx-amber); font-size: .85rem; line-height: 1.45; }
 .cm-detail-verify i { margin-top: 1px; }
-.cm-source { display: flex; gap: 7px; align-items: flex-start; margin: 16px 2px 4px !important; font-size: .8rem; line-height: 1.5; color: var(--lx-ink-3); }
-.cm-detail:not([hidden]) ~ .cm-source { display: none; }
-
-/* Campus plan maps: the scan is the base layer, on paper white in both themes'
-   surroundings; dark mode inverts the scan so it doesn't glare. */
-.cm-map.cm-is-plan { background: #eef0f3; }
-.cm-plan-img { image-rendering: auto; }
-body.lx:not(.light-mode) .cm-map.cm-is-plan { background: #14171e; }
-body.lx:not(.light-mode) .cm-plan-img { filter: invert(.9) hue-rotate(180deg) contrast(.95); }
 
 /* Empty state (university not mapped yet) */
 .cm-empty { padding: 22px 20px 26px; text-align: center; }

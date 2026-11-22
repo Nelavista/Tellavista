@@ -6,9 +6,8 @@
  * Kept from the original LASU map: Leaflet + OpenStreetMap / Esri imagery, live location
  * tracking (watchPosition), road-following routes via OSRM (Leaflet Routing Machine,
  * now loaded only when a student asks for directions) and nearest-place distance.
- * Campus-plan universities (map.kind == 'plan', e.g. University of Abuja) use the plan
- * image as the base layer in L.CRS.Simple, with tappable building outlines; GPS features
- * are off there because the plan has no real coordinates.
+ * Every university (LASU, University of Abuja, ...) gets this same live map; only its
+ * dataset of places differs. Place names show as map labels by zoom tier.
  * Dropped: draggable markers (a calibration tool that let
  * students move buildings on their own screen); place positions are edited by admins.
  */
@@ -25,7 +24,7 @@
 
   var KEY = {
     saved: 'nv_campus_saved_' + SLUG,
-    layer: 'nv_campus_layer',
+    layer: 'nv_campus_layer_' + SLUG,
     recent: 'nv_campus_recent',
   };
   var WALK_M_PER_MIN = 80;          // ~4.8 km/h
@@ -63,28 +62,12 @@
   if (!DATA.map.center) return;   // no coordinates for this campus yet: the empty state says so
 
   // ── Map + base layers ──────────────────────────────────────────────────────────
-  // Two kinds of campus: 'geo' (real coordinates on satellite / OpenStreetMap tiles) and
-  // 'plan' (a straightened official campus plan drawn in its own pixel frame with
-  // L.CRS.Simple; no GPS, so no location or road directions).
-  var PLAN = DATA.map.kind === 'plan';
-  var Z = PLAN ? { focus: 0.5, label: 0.25, fitMax: 1, max: 2.5 } : { focus: 18, label: 18, fitMax: 18, max: 20 };
-  var map;
-  if (PLAN) {
-    var planBounds = L.latLngBounds(DATA.map.plan.bounds);
-    map = L.map('cm-map', {
-      crs: L.CRS.Simple, zoomControl: false, minZoom: -3, maxZoom: Z.max, zoomSnap: 0.25, zoomDelta: 0.5,
-      wheelPxPerZoomLevel: 120, maxBounds: planBounds.pad(0.25), maxBoundsViscosity: 0.9, tap: true,
-    });
-    map.attributionControl.setPrefix(false);
-    L.imageOverlay(DATA.map.plan.image, planBounds, {
-      className: 'cm-plan-img', attribution: DATA.map.plan.credit || 'Campus plan', alt: 'Campus plan of ' + DATA.university.name,
-    }).addTo(map);
-    $('cm-map').classList.add('cm-is-plan');
-  } else {
-    map = L.map('cm-map', { zoomControl: false, maxZoom: Z.max, minZoom: 5, tap: true });
-  }
+  // Every university uses the same live map; only the dataset differs.
+  // Labels appear by tier as the student zooms in (see campus_maps.label_tier).
+  var Z = { focus: 18, fitMax: 18, max: 20, tier1: 16, tier2: 18 };
+  var map = L.map('cm-map', { zoomControl: false, maxZoom: Z.max, minZoom: 5, zoomSnap: 0.5, tap: true });
   L.control.zoom({ position: 'topright' }).addTo(map);
-  var layers = PLAN ? null : {
+  var layers = {
     satellite: L.layerGroup([
       L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
         maxNativeZoom: 19, maxZoom: 20, attribution: 'Imagery © Esri, Maxar, Earthstar Geographics',
@@ -94,17 +77,19 @@
       maxNativeZoom: 19, maxZoom: 20, attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
     }),
   };
-  var layerName = store(KEY.layer) === 'street' ? 'street' : 'satellite';
-  if (layers) layers[layerName].addTo(map);
+  // The university's default base layer, unless the student switched it for this school.
+  var saved_layer = store(KEY.layer);
+  var layerName = saved_layer === 'street' || saved_layer === 'satellite' ? saved_layer
+    : (DATA.map.default_layer === 'street' ? 'street' : 'satellite');
+  layers[layerName].addTo(map);
   var layerBtn = $('cm-layer');
   function syncLayerBtn() {
-    if (!layers) return;
     var toStreet = layerName === 'satellite';
     layerBtn.innerHTML = '<i class="' + (toStreet ? 'ri-map-2-line' : 'ri-earth-line') + '" aria-hidden="true"></i>';
     layerBtn.setAttribute('aria-label', toStreet ? 'Switch to map view' : 'Switch to satellite view');
     document.body.classList.toggle('cm-on-satellite', layerName === 'satellite');
   }
-  if (layers) layerBtn.addEventListener('click', function () {
+  layerBtn.addEventListener('click', function () {
     map.removeLayer(layers[layerName]);
     layerName = layerName === 'satellite' ? 'street' : 'satellite';
     layers[layerName].addTo(map);
@@ -117,7 +102,7 @@
     L.polygon(DATA.map.boundary, { color: '#7d9bff', weight: 2, fill: false, dashArray: '6 6', interactive: false }).addTo(map);
   }
 
-  var campusBounds = DATA.map.bounds ? L.latLngBounds(DATA.map.bounds).pad(PLAN ? 0.02 : 0.08) : null;
+  var campusBounds = DATA.map.bounds ? L.latLngBounds(DATA.map.bounds).pad(0.08) : null;
   function fitCampus(animate) {
     if (campusBounds) map.fitBounds(campusBounds, fitOptions(animate));
     else map.setView(DATA.map.center, DATA.map.zoom || 16, { animate: !!animate });
@@ -125,17 +110,19 @@
   function panelHeight() { var el = $('cm-panel'); return (!el || isDesktop()) ? 0 : el.getBoundingClientRect().height; }
   function fitOptions(animate) {
     var pad = { animate: !!animate, maxZoom: Z.fitMax };
-    if (isDesktop()) { pad.paddingTopLeft = [24, 24]; pad.paddingBottomRight = [24, 24]; }
+    if (isDesktop()) { pad.paddingTopLeft = [24, 24]; pad.paddingBottomRight = [40, 24]; }
     else { pad.paddingTopLeft = [16, 16]; pad.paddingBottomRight = [16, panelHeight() + 16]; }
     return pad;
   }
   $('cm-fit').addEventListener('click', function () { fitCampus(true); });
 
-  var labelsOn = false;
-  map.on('zoomend', function () {
-    var on = map.getZoom() >= Z.label;
-    if (on !== labelsOn) { labelsOn = on; $('cm-map').classList.toggle('cm-labels-on', on); }
-  });
+  function syncLabels() {
+    var z = map.getZoom(), el = $('cm-map');
+    el.classList.toggle('cm-show-t1', z >= Z.tier1);
+    el.classList.toggle('cm-compact', z < 17);
+    el.classList.toggle('cm-show-t2', z >= Z.tier2);
+  }
+  map.on('zoomend', syncLabels);
 
   if (!PLACES.length) {   // campus coordinates but no places yet
     fitCampus(false);
@@ -155,31 +142,27 @@
   }
   PLACES.forEach(function (p) {
     var m = L.marker([p.lat, p.lng], { icon: pinIcon(p, false), title: p.name, keyboard: true, riseOnHover: true });
-    m.bindTooltip(esc(p.name), { permanent: true, direction: 'bottom', offset: [0, 12], className: 'cm-label' });
+    // Map-style text label beside the pin, shown by tier as the student zooms in.
+    m.bindTooltip(esc(p.name), {
+      permanent: true, direction: 'right', offset: [13, 0],
+      className: 'cm-label cm-t' + (p.label_tier === 1 ? 1 : 2) + (p.category === 'faculty' ? ' cm-label-major' : ''),
+    });
     m.on('click', function () { openPlace(p.id, { pan: false }); });
     markers[p.id] = m;
   });
-
-  // Building outlines (plan campuses): the whole block is tappable, and the open place
-  // is highlighted on the plan.
-  var footprints = {};
-  function footprintStyle(p, active) {
-    return active
-      ? { color: '#3a5fe0', weight: 3, opacity: 1, fillColor: '#3a5fe0', fillOpacity: 0.16 }
-      : { color: catOf(p).color, weight: 1.5, opacity: 0.55, fillColor: catOf(p).color, fillOpacity: 0.06 };
-  }
-  PLACES.forEach(function (p) {
-    if (!p.footprint) return;
-    var r = L.rectangle(p.footprint, footprintStyle(p, false));
-    r.on('click', function () { openPlace(p.id, { pan: false }); });
-    footprints[p.id] = r;
-  });
   function showOnMap(p, show) {
-    [markers[p.id], footprints[p.id]].forEach(function (l) {
-      if (!l) return;
-      if (show && !map.hasLayer(l)) l.addTo(map);
-      else if (!show && map.hasLayer(l)) map.removeLayer(l);
-    });
+    var m = markers[p.id];
+    if (show && !map.hasLayer(m)) m.addTo(map);
+    else if (!show && map.hasLayer(m)) map.removeLayer(m);
+  }
+
+  // A place's block outline (where its dataset has one) is drawn only while it is open.
+  var outline = null;
+  function showOutline(p) {
+    if (outline) { map.removeLayer(outline); outline = null; }
+    if (p && p.outline) {
+      outline = L.polygon(p.outline, { color: '#3a5fe0', weight: 2, opacity: 0.9, fillColor: '#3a5fe0', fillOpacity: 0.1, interactive: false }).addTo(map);
+    }
   }
 
   // ── Panel (bottom sheet on phones, side panel on desktop) ────────────────────────
@@ -353,7 +336,7 @@
     var media = $('cm-detail-media');
     if (p.image) { $('cm-detail-img').src = p.image; $('cm-detail-img').alt = p.name; media.hidden = false; }
     else media.hidden = true;
-    if (!PLAN) $('cm-gmaps').href = 'https://www.google.com/maps/dir/?api=1&travelmode=walking&destination=' + p.lat + ',' + p.lng;
+    $('cm-gmaps').href ='https://www.google.com/maps/dir/?api=1&travelmode=walking&destination=' + p.lat + ',' + p.lng;
     syncSave();
     $('cm-route').hidden = !(route && route.id === id);
     if (route && route.id !== id) clearRoute();
@@ -370,27 +353,16 @@
   function setActive(p, on) {
     markers[p.id].setIcon(pinIcon(p, on));
     markers[p.id].setZIndexOffset(on ? 1000 : 0);
-    if (footprints[p.id]) {
-      footprints[p.id].setStyle(footprintStyle(p, on));
-      if (on) footprints[p.id].bringToFront();
-    }
+    // The open place keeps its label at any zoom.
+    var tip = markers[p.id].getTooltip();
+    if (tip && tip.getElement()) tip.getElement().classList.toggle('is-sel', on);
+    showOutline(on ? p : null);
   }
   function whereText(p) {
     var w = DATA.university.name + (p.campus ? ' · ' + p.campus : '');
     if (userLatLng) w += ' · ' + fmtDist(dist(p)) + ' from you';
     return w;
   }
-
-  // Plan campuses: "View location" shows the place on the plan with the sheet tucked away.
-  $('cm-view').addEventListener('click', function () {
-    var p = BY_ID[selectedId]; if (!p) return;
-    if (!isDesktop()) setSheet('peek');
-    var z = Math.max(map.getZoom(), Z.focus + 0.5);
-    setTimeout(function () {
-      if (footprints[p.id]) map.fitBounds(footprints[p.id].getBounds().pad(1.2), fitOptions(true));
-      else map.setView([p.lat, p.lng], z, { animate: true });
-    }, 0);
-  });
 
   function closePlace(keepSheet) {
     if (selectedId && BY_ID[selectedId]) setActive(BY_ID[selectedId], false);
@@ -593,10 +565,9 @@
     setSheet(isDesktop() ? 'list' : 'peek');
     fitCampus(false);
   }
-  if (PLAN) {
-    // Let students zoom out a little past the whole plan, but not to a speck.
-    map.setMinZoom(map.getBoundsZoom(campusBounds) - 1);
-  }
+  // Major labels always show at the opening whole-campus view, even on a narrow phone.
+  if (!startId || !BY_ID[startId]) Z.tier1 = Math.min(Z.tier1, map.getZoom());
+  syncLabels();
   window.matchMedia('(min-width: 900px)').addEventListener('change', function (e) {
     if (e.matches && panel.getAttribute('data-state') === 'peek') setSheet('list');
     setTimeout(function () { map.invalidateSize(); }, 50);

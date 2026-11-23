@@ -417,7 +417,7 @@ Needed images (exact filenames will be listed in `IMAGE-PROMPTS.md` before build
 - `public/images/home/hero-student.webp` — 4:5, a student working on a phone/laptop
   in a real campus setting. This is the only hero image.
 - `public/images/home/campus-study.webp` — 3:2, students working together.
-- `public/images/about/founder.webp` — real founder portrait, not generated.
+- ~~`public/images/about/founder.webp`~~ — withdrawn 2026-11-23. The founder biography and portrait are no longer part of the public site.
 - `public/images/about/team.webp` — real team photo, only if one exists.
 - `public/images/og/default.webp` — 1200×630 social card using the wordmark and one
   real product artifact, not a stock photo.
@@ -584,7 +584,7 @@ approved direction.
 | Structured scored tasks | Reuse the practice/assessment pattern: one task at a time, visible but calm timer, save on every answer, deterministic score as a stamp with a pass mark. No “AI magic” iconography; no animated score reveal. |
 | Assessment gate | Show the gate as a checklist with the exact missing item and a link, not a locked blur. A blocked assessment must say what is still required. |
 | Transcript/talent evidence | Extend the transcript document grammar: per-skill evidence rows, dates, source and verification stamp. Languages and academic background are rows, not badges. Keep the privacy toggle authoritative. |
-| `/impact` | Same public editorial grammar as `/about`, with the working-record honesty rule: every number needs a period, source and owner verification. If 2,500+/500+ cannot be defended, do not ship the page. |
+| `/impact` | Same public editorial grammar as `/about`, with the working-record honesty rule: every number needs a period, source and owner verification. The page now reads live database aggregates and ops can withdraw them from admin **Public site**; do not reintroduce hardcoded reach figures. |
 | FUTA taxonomy | No student-facing visual change. Admin imports show provenance (`futa_official`) and source in the run report, not a new colour or icon. |
 | AI grading hardening | No visual change. It is a prompt-boundary fix; keep it out of the design layer. |
 

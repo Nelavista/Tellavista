@@ -116,6 +116,12 @@ class PlatformSettings(Base, TimestampMixin):
     )
 
     target_launch_date: Mapped[date | None] = mapped_column(Date)
+    # The public /impact page reads live aggregates from the database. Ops can
+    # hide those figures without a deploy while a count is being checked; the
+    # admin preview always shows them.
+    impact_metrics_enabled: Mapped[bool] = mapped_column(
+        Boolean, default=True, server_default="true", nullable=False
+    )
 
     updated_by: Mapped[int | None] = mapped_column(
         ForeignKey("users.id", ondelete="SET NULL")

@@ -2611,6 +2611,49 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/platform/impact": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Public Impact
+         * @description Public: live product aggregates for the impact page.
+         *
+         *     When publishing is switched off the response still says so, but the figures
+         *     are not sent at all. A hidden number is not left to the client to hide.
+         */
+        get: operations["public_impact_v1_platform_impact_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/platform/impact/admin": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Admin Impact
+         * @description Staff preview: every figure, including a block that is not published.
+         */
+        get: operations["admin_impact_v1_platform_impact_admin_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/platform/settings": {
         parameters: {
             query?: never;
@@ -4517,6 +4560,44 @@ export interface components {
             /** App Version */
             app_version: string;
         };
+        /**
+         * ImpactMetricOut
+         * @description One published figure and the sentence that defines it.
+         */
+        ImpactMetricOut: {
+            /** Key */
+            key: string;
+            /** Label */
+            label: string;
+            /** Value */
+            value: number;
+            /** Detail */
+            detail: string;
+        };
+        /** ImpactMoneyOut */
+        ImpactMoneyOut: {
+            /** Currency */
+            currency: string;
+            /** Amount Minor */
+            amount_minor: number;
+        };
+        /**
+         * ImpactOut
+         * @description Live aggregates for /impact. No student-level data is present.
+         */
+        ImpactOut: {
+            /**
+             * Generated At
+             * Format: date-time
+             */
+            generated_at: string;
+            /** Enabled */
+            enabled: boolean;
+            /** Metrics */
+            metrics: components["schemas"]["ImpactMetricOut"][];
+            /** Paid By Currency */
+            paid_by_currency: components["schemas"]["ImpactMoneyOut"][];
+        };
         /** ImportIn */
         ImportIn: {
             /**
@@ -5760,6 +5841,8 @@ export interface components {
             curriculum_authoring_model?: string | null;
             /** Target Launch Date */
             target_launch_date?: string | null;
+            /** Impact Metrics Enabled */
+            impact_metrics_enabled?: boolean | null;
         };
         /**
          * PlatformSettingsOut
@@ -5802,6 +5885,8 @@ export interface components {
             payout_second_approver_always: boolean;
             /** Payout Require Verified Email */
             payout_require_verified_email: boolean;
+            /** Impact Metrics Enabled */
+            impact_metrics_enabled: boolean;
             /** Updated By */
             updated_by?: number | null;
         };
@@ -12721,6 +12806,57 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["PlatformConfigOut"];
+                };
+            };
+        };
+    };
+    public_impact_v1_platform_impact_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ImpactOut"];
+                };
+            };
+        };
+    };
+    admin_impact_v1_platform_impact_admin_get: {
+        parameters: {
+            query?: never;
+            header?: {
+                authorization?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ImpactOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
         };

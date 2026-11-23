@@ -34,6 +34,7 @@ class PlatformSettingsOut(PlatformConfigOut):
     payout_second_approver_threshold_minor: int
     payout_second_approver_always: bool
     payout_require_verified_email: bool
+    impact_metrics_enabled: bool
     updated_by: int | None = None
 
 
@@ -55,10 +56,34 @@ class PlatformSettingsIn(BaseModel):
     curriculum_license: str | None = Field(default=None, max_length=80)
     curriculum_authoring_model: str | None = Field(default=None, max_length=40)
     target_launch_date: date | None = None
+    impact_metrics_enabled: bool | None = None
 
     def changes(self) -> dict:
         """Only the fields the client actually sent (null is meaningful for a date)."""
         return self.model_dump(exclude_unset=True)
+
+
+class ImpactMetricOut(BaseModel):
+    """One published figure and the sentence that defines it."""
+
+    key: str
+    label: str
+    value: int
+    detail: str
+
+
+class ImpactMoneyOut(BaseModel):
+    currency: str
+    amount_minor: int
+
+
+class ImpactOut(BaseModel):
+    """Live aggregates for /impact. No student-level data is present."""
+
+    generated_at: datetime
+    enabled: bool
+    metrics: list[ImpactMetricOut]
+    paid_by_currency: list[ImpactMoneyOut]
 
 
 class EligibilityOut(BaseModel):
@@ -95,6 +120,9 @@ __all__ = [
     "ConsentListOut",
     "ConsentOut",
     "EligibilityOut",
+    "ImpactMetricOut",
+    "ImpactMoneyOut",
+    "ImpactOut",
     "PlatformConfigOut",
     "PlatformSettingsIn",
     "PlatformSettingsOut",

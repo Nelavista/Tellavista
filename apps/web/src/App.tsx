@@ -6,6 +6,7 @@ import { AppShell } from './components/AppShell';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { PublicLayout } from './components/PublicLayout';
 import { ScrollToTop } from './components/ScrollToTop';
+import { Telemetry } from './components/Telemetry';
 import { SessionProvider, useSession } from './lib/session';
 import { ThemeProvider } from './lib/theme-context';
 import { Landing } from './routes/Landing';
@@ -609,6 +610,7 @@ export function App(): JSX.Element {
       <ThemeProvider>
         <SessionProvider>
           <ScrollToTop />
+          <Telemetry />
           <RouteTable />
         </SessionProvider>
       </ThemeProvider>

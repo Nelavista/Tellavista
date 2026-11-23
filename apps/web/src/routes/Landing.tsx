@@ -248,11 +248,11 @@ export function Landing(): JSX.Element {
           <div className="nv-statement__body">
             <p className="nv-lede">
               We publish what the product can prove: learning connected to evidence, evidence connected to
-              work, and work connected to a readable payout. Reach figures appear only when they are verified
-              against a current source.
+              work, and work connected to a readable payout. The impact figures are read from the platform
+              database, not estimated for the page.
             </p>
             <p className="nv-muted">
-              No invented metrics, no borrowed testimonials. If a number is not defensible today, it is not on
+              No invented metrics, no borrowed testimonials. If the database has not recorded it, it is not on
               the page.
             </p>
             <Link className="nv-link-arrow" to="/impact">

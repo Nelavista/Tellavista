@@ -1,8 +1,10 @@
 import { BrandLoader, ConfirmDialog } from '@nelavista/ui';
 import * as React from 'react';
 
+import { AdminErrorBoundary } from './components/AdminErrorBoundary';
 import { Shell } from './components/Shell';
 import { useHashRoute } from './lib/route';
+import { capturePageview, identify } from './lib/telemetry';
 import { SessionProvider, useSession } from './lib/session';
 import { AdminNotFound } from './routes/AdminNotFound';
 import { Announcements } from './routes/Announcements';
@@ -15,6 +17,7 @@ import { Money } from './routes/Money';
 import { Opportunities } from './routes/Opportunities';
 import { Overview } from './routes/Overview';
 import { Platform } from './routes/Platform';
+import { PublicSite } from './routes/PublicSite';
 import { Projects } from './routes/Projects';
 import { Review } from './routes/Review';
 import { Security } from './routes/Security';
@@ -35,6 +38,7 @@ function Screen({ route }: { route: string }): JSX.Element {
   if (route.startsWith('/announcements')) return <Announcements />;
   if (route.startsWith('/money')) return <Money />;
   if (route.startsWith('/content')) return <Content />;
+  if (route.startsWith('/site')) return <PublicSite />;
   if (route.startsWith('/campus')) return <Campus />;
   if (route.startsWith('/platform')) return <Platform />;
   if (route.startsWith('/security')) return <Security />;
@@ -45,6 +49,14 @@ function Screen({ route }: { route: string }): JSX.Element {
 function Body(): JSX.Element {
   const { status, me, mfa } = useSession();
   const [route, go] = useHashRoute();
+
+  React.useEffect(() => {
+    capturePageview(route);
+  }, [route]);
+
+  React.useEffect(() => {
+    if (me) identify(me.id, { role: me.role ?? 'unknown', app: 'admin' });
+  }, [me]);
 
   if (status === 'loading') {
     return <BrandLoader full label="Loading Nelavista Admin" />;
@@ -120,7 +132,9 @@ function SignOut(): JSX.Element {
 export function App(): JSX.Element {
   return (
     <SessionProvider>
-      <Body />
+      <AdminErrorBoundary>
+        <Body />
+      </AdminErrorBoundary>
     </SessionProvider>
   );
 }

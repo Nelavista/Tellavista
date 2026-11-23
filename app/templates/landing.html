@@ -270,12 +270,12 @@
         <div class="campus-carousel" aria-label="Nelavista platform statistics">
           <div class="campus-stats-track">
             <div class="campus-stat-set">
-              <div class="campus-stat"><strong><span class="count-up" data-target="2500">0</span>+</strong><span>Students</span></div>
+              <div class="campus-stat"><strong><span class="count-up" data-target="{{ stats.student_count }}">0</span></strong><span>Student accounts</span></div>
               <div class="campus-stat"><strong><span class="count-up" data-target="{{ stats.skill_count }}">0</span></strong><span>Skill paths</span></div>
               <div class="campus-stat"><strong><span class="count-up" data-target="{{ stats.university_count }}">0</span></strong><span>Universities</span></div>
             </div>
             <div class="campus-stat-set" aria-hidden="true">
-              <div class="campus-stat"><strong>2,500+</strong><span>Students</span></div>
+              <div class="campus-stat"><strong>{{ stats.student_count }}</strong><span>Student accounts</span></div>
               <div class="campus-stat"><strong>{{ stats.skill_count }}</strong><span>Skill paths</span></div>
               <div class="campus-stat"><strong>{{ stats.university_count }}</strong><span>Universities</span></div>
             </div>
@@ -289,7 +289,7 @@
     <!-- ═══ WHY NELAVISTA ═══ -->
     <section class="why-founder-section" id="about">
       <div class="container">
-        <div class="why-founder-layout">
+        <div class="why-founder-layout" style="grid-template-columns: 1fr;">
           <div class="why-founder-story">
             <div class="why-founder-intro reveal">
               <span class="section-label">Why Nelavista</span>
@@ -310,21 +310,7 @@
             </div>
 
             <p class="why-copy why-copy-last">Nelavista is bringing these experiences together, into one platform built for how African university students actually study, learn, and move forward.</p>
-
-            <div class="founder-divider"><span>Founder</span></div>
-            <h3 class="founder-story-heading">Built by a student who understands the problem.</h3>
-            <blockquote class="founder-quote-block">
-              <p>I built Nelavista because I experienced the same fragmented university life we're trying to fix: searching for materials, preparing for exams, learning skills independently, and trying to figure out what comes after graduation.</p>
-              <p>Nelavista is my attempt to build the platform I wish I had as a student.</p>
-            </blockquote>
           </div>
-
-          <figure class="founder-portrait">
-            <span class="founder-pin-line" aria-hidden="true"></span>
-            <span class="founder-pin-dot" aria-hidden="true"></span>
-            <img src="{{ url_for('static', filename='images/landing/founder.webp') }}" alt="Nelavista founder Abdul Afeez Tella" loading="lazy" decoding="async">
-            <figcaption><strong>Abdul Afeez Tella</strong><span>Founder &amp; CEO, Nelavista</span></figcaption>
-          </figure>
         </div>
       </div>
     </section>

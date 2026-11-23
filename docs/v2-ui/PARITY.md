@@ -2,8 +2,8 @@
 
 | Field | Value |
 |---|---|
-| Status | **Implemented 2026-11-01; V1 delta audited 2026-11-04; V1 delta ported 2026-11-08; admin operations and comms closed 2026-11-19.** The original parity scope is wired and the V1 additions (ALL content, language profile, structured scored tasks and gate, hub and catalogue filters, evidence rows, talent directory filters, Impact, FUTA, prompt hardening, mobile lockstep) are in place. |
-| Date | 2026-10-27; post-build, palette correction and API closure 2026-11-01; V1 delta 2026-11-04; V1 delta port 2026-11-08; admin bulk actions, aggregate overview, application lifecycle, announcements and newsletter 2026-11-19 |
+| Status | **Implemented 2026-11-01; V1 delta audited 2026-11-04; V1 delta ported 2026-11-08; admin operations and comms closed 2026-11-19; live impact metrics and instrumentation 2026-11-23.** The original parity scope is wired and the V1 additions (ALL content, language profile, structured scored tasks and gate, hub and catalogue filters, evidence rows, talent directory filters, Impact, FUTA, prompt hardening, mobile lockstep) are in place. |
+| Date | 2026-10-27; post-build, palette correction and API closure 2026-11-01; V1 delta 2026-11-04; V1 delta port 2026-11-08; admin bulk actions, aggregate overview, application lifecycle, announcements and newsletter 2026-11-19; live Impact metrics, admin Public site and PostHog instrumentation 2026-11-23 |
 | Method | V2 code and API contracts are the source of truth. V1 is read-only reference. |
 | Legend | **Stronger** = V2 does more or does it better. **Parity** = capability exists in both. **Gap** = V2 needs work to match. **Dropped** = V2 intentionally removes it; a reason is required. **New** = not in V1. **Decide** = product decision needed. |
 | Companion documents | `docs/v2-ui/AUDIT.md`, `docs/v2-ui/ROUTE-MAP.md`, `docs/v2-ui/DESIGN-DIRECTION.md`, `docs/v2-ui/IMAGE-PROMPTS.md` |
@@ -23,7 +23,7 @@
 
 | Area | V2 state (post-build) | Verdict |
 |---|---|---|
-| Public marketing | Separate routed pages: Landing, Features, How it works, About, Impact, Contact, FAQ, 404, Offline; per-page metadata and sitemap | **Parity/stronger** for the original set; the Impact page and landing band are built with honest copy and no unverified figures |
+| Public marketing | Separate routed pages: Landing, Features, How it works, About, Impact, Contact, FAQ, 404, Offline; per-page metadata and sitemap | **Parity/stronger** for the original set; the Impact page publishes live database aggregates that ops can withdraw, and the founder biography is no longer public |
 | Auth | Login, signup, verify, reset; shared auth layout; legal links; signup records terms and privacy at the current version | **Parity**; `ConsentGate` handles re-consent after a version change |
 | Student journey | Home, Academia, Materials, Ask, CBT, Skills, African Languages Lab, Language profile, My learning, Lesson, Practice, Verification, Assessment, Attempt review, Practical task, Transcript, Opportunities, Applications, Work, Earnings, Talent, Campus, Notifications, Settings, Onboarding | **Parity/stronger** for the whole set, hub and language profile included |
 | Skills | Verification/evidence journey, practice, the language profile and the ALL hub with server-side filters | **Stronger** in verification/evidence; the ALL catalogue is seeded and filtered by the API, structured tasks score deterministically and `/skills/languages` separates claims from proof |
@@ -31,7 +31,7 @@
 | Opportunities/work/money | Managed model, eligibility blockers, applications, invitations, ledger, payout batches | **Stronger** than V1's status-only marketplace |
 | Talent/transcript | Evidence-only, scoped revocable shares, consent history, per-skill evidence, academic context and languages | **Stronger** privacy and a complete evidence trail on both the transcript and the talent view |
 | Employer | No self-service | **Dropped by design** at launch; managed work instead. The permission-gated `/v1/talent/directory` contract (language, language level, academic level, visibility status, background) is now used by the admin **Talent directory** screen; no employer self-service is planned |
-| Admin | Overview, Waitlist, Campus, Audit, Imports, Users, Opportunities, Projects, Review, Money, Content, Announcements (with newsletter subscribers), Platform, Security, 404 | **Stronger** in audit/money/quality; bulk actions, the aggregate overview, the application lifecycle and comms administration are built |
+| Admin | Overview, Waitlist, Campus, Audit, Imports, Users, Opportunities, Projects, Review, Money, Content, Public site, Announcements (with newsletter subscribers), Platform, Security, 404 | **Stronger** in audit/money/quality; bulk actions, the aggregate overview, the application lifecycle, comms administration and the impact publish control are built |
 | Utility | Real 404, error boundary, offline screen, route focus/title | **Parity/stronger** |
 | Theme | Light/dark with Nelavista blue and white | **Parity**; both surfaces implemented, manual visual pass recommended |
 | Public legal/contact | Privacy, terms and contributor terms in final product copy; real support email | **Parity**; legal copy is not a draft |
@@ -44,15 +44,18 @@ in V2. The dedicated hub/catalogue filters, the per-skill scored-practice
 prerequisite, the transcript/talent evidence rows, the talent directory filters
 and the mobile lockstep are ported too (§1.2, `docs/build/REMAINING_WORK.md` §I).
 What remains is real business content, approved pricing, social profile URLs,
-photography and the manual launch checks.
+team/campus photography and the manual launch checks. The impact figures are
+live from the product database and can be withdrawn from the admin Public site
+screen.
 
 ### 1.1 What is still limited
 
 - **Closed API work:** in-place signed-in password change; full course/topic
   detail; CBT history with answer review; student cohort-invite list; admin campus
   read. All are implemented and used by the UI.
-- **Content:** real social profile URLs, real metrics/testimonials, photography,
-  employer positioning, and the material upload/analysis replacement copy. Pricing
+- **Content:** real social profile URLs, testimonials, team/campus photography,
+  employer positioning, and the material upload/analysis replacement copy. Proof
+  metrics now come from live database aggregates, not from marketing copy. Pricing
   is published as commercial positions, not invented amounts.
 - **Verification:** admin 2FA enrolment recovery-code handoff is fixed and the
   whole first-login sequence is now covered in the API and admin tests; one manual
@@ -80,7 +83,7 @@ source of truth for the delta is the V1 code on `main`, not this table:
 | ALL hub and catalogue filters | `/skills/african-languages` hub with language/level filters, recommended skills and track progress; catalogue filters for language, level, tag and programme | `/skills/african-languages` lists tracks and skills with search/language/level filters; `/skills` filters by search, programme, language and level locally; the API filters by `q`, `program`, `category`, `language`, `tag` and `level`, and `/skills/career-tracks` returns each track's ordered skills | **Parity** (track progress is not stored) | Keep track progress out until a product decision says a track is a learning path |
 | Transcript and talent evidence | Per-skill verification records on the transcript; evidence records, academic background and languages on the Talent profile; evidence visibility still respects the `show_skill_transcript` privacy toggle | V2 transcript records scored practice and assessment evidence and now renders a "By skill" table with the latest evidence row; Talent shows per-skill evidence rows plus languages and academic context, all still scoped by the share's `academic`/`availability`/`transcript` grants | **Parity** | Keep share scopes authoritative |
 | Employer talent search filters | Language, level, verification/assessment status, practical-done and academic-background filters on `/employer/discover` (employers and admins) | `/v1/talent/directory` filters by language, language level, academic level, visibility status and background, and the admin **Talent directory** screen uses it. Verification and practical-done filters stay out of scope while employer self-service is dropped | **Parity** for the approved surface | Keep employer self-service dropped; add evidence-status filters only if that decision changes |
-| Impact page | Public `/impact` with reach numbers, "what we've built", CTA; landing track-record band and footer link | `/impact` and the landing band are live with the same outcomes story, but deliberately publish no reach figures until they are verified. Footer link present. | **Parity/stronger (honest)** | Add the 2,500+/500+ numbers only when the business confirms they are current and defensible. |
+| Impact page | Public `/impact` with reach numbers, "what we've built", CTA; landing track-record band and footer link | `/impact` publishes live aggregates from `GET /platform/impact` (accounts, published skills, universities, courses, verifications, assessments, practical tasks, approved work, open opportunities and paid earnings by currency). Ops previews them and can hide publication from admin **Public site**. Footer link present. | **Parity/stronger (verified)** | Do not copy V1's hardcoded 2,500+/500+ numbers. Review the live figures before launch. |
 | FUTA official taxonomy | Verified FUTA schools/departments and 35 Surveying & GeoInformatics courses, with provenance (`Course.source = 'futa_official'`) and a cleanup script for unlisted departments | V2 now seeds the verified structure and SVG rows, adds `semester`, `course_type`, `description` and `source`, and preserves them through V1 export/import | **Partial** | Add further department course lists only after their official FUTA pages are verified; do not infer unlisted courses |
 | AI grading hardening | `wrap_untrusted` escapes student-supplied `<student_content>` delimiters, so a submission cannot close the untrusted block early | V2 Ask escapes retrieved material and the student question inside `<student_content>` boundaries with a separate system instruction; V2 practice and assessment grading are deterministic and have no AI prompt path | **Parity** | Reuse the boundary helper for any future AI feedback path; do not introduce model calls into deterministic practice validation |
 | Test-suite speed | Test-only SQLite pragmas (`synchronous=OFF`, `journal_mode=MEMORY`) shorten V1 suite setup | V2 has its own test fixtures; no user-facing change | **No action** | Keep the optimisation in V1; do not copy test pragmas into production configuration. |
@@ -108,7 +111,7 @@ run) and track progress, which needs a product decision rather than code.
 | `/privacy-policy` | `/legal/privacy` final product copy for V2 data flows | **Parity** | Keep the version in sync with `/platform/config` |
 | `/terms-of-service` | `/legal/terms` final product copy for V2 | **Parity** | Keep the version in sync with `/platform/config` |
 | Contributor terms only in platform settings | `/legal/contributor-terms` public final copy | **Parity/stronger** | Keep quality, payment and licence terms aligned with the API |
-| `/impact` track-record page (new 2026-11-01) with 2,500+ students reached, 500+ trained in AI, live university/skill counts; landing band and footer link | `/impact` and the landing band with the same outcomes story; no reach figures published | **Parity/stronger (honest)** | Add the 2,500+/500+ numbers only when the business confirms they are current and defensible |
+| `/impact` track-record page (new 2026-11-01) with 2,500+ students reached, 500+ trained in AI, live university/skill counts; landing band and footer link | `/impact` with live counts from the product database and an admin publish control; the landing band derives its account count from the same data | **Parity/stronger (verified)** | Keep the figures computed from current rows; do not import V1's hardcoded numbers |
 | No newsletter | Footer opt-in, neutral confirmation, token-based unsubscribe at `/newsletter/unsubscribe` and an admin subscriber list | **New (built)** | Double opt-in is still open; a submitted address is subscribed immediately |
 | No public announcement banner | Audience-filtered notices above the workspace shell, dismissible per id, and on the mobile Home feed | **New (built)** | Keep the banner silent when the read fails: a notice is news, not a dependency |
 | No blog | None | **Not required** | Do not add |
@@ -123,9 +126,11 @@ run) and track progress, which needs a product decision rather than code.
 V1's public site is a polished landing page plus thin About/legal pages, and now
 an Impact page with fixed reach figures. V2 has the separate marketing routes,
 the three legal documents, a real 404 and an offline screen, plus per-page
-metadata and a fuller sitemap. The Impact page and landing band now exist; both
-publish outcomes, not unverified reach figures. The remaining public work is
-otherwise approved pricing and real business content.
+metadata and a fuller sitemap. V2's Impact page publishes figures computed from
+current rows, and the landing band uses the live account count instead of V1's
+hardcoded number. The founder biography and portrait were removed from the public
+surface. The remaining public work is approved pricing, testimonials, social URLs
+and team/campus photography.
 
 ---
 
@@ -300,7 +305,7 @@ not rebuild V1's dead moderation tools.
 | PWA manifest but no offline | Real PWA shell | **Stronger** | Keep; add update/install UX |
 | No robots/sitemap | Robots and sitemap cover public pages; private routes disallowed | **Parity/stronger** | Keep in sync with routes |
 | No OG/canonical | Per-page title, description, canonical, OG and Twitter metadata | **Stronger** | Keep the route map and meta map in sync |
-| No analytics/error tracking | None | **Gap** | Add before launch |
+| No analytics/error tracking | PostHog in the web and admin apps, gated by `VITE_POSTHOG_KEY`; API journey events and unhandled `$exception` reports gated by `POSTHOG_API_KEY`; no Sentry | **New (built)** | Set the keys per environment and confirm delivery in PostHog before launch |
 | Support email/social links | `support@nelavista.com`; no placeholder social links | **Parity** | Add real social links only when supplied |
 | No admin 404 | Unknown hash renders `AdminNotFound` | **Stronger** | Keep |
 | No skip link/aria-current | Skip link, focus-to-main, route titles and current nav state | **Stronger** | Keep |
@@ -339,7 +344,7 @@ replacement is real and the product does not pretend the old feature exists.
 | LASU curriculum browser | Is academic context enough, or is the curriculum reference needed? |
 | Employer self-service | Later product; managed work is the launch replacement. |
 | African Languages Lab | Port the 94-skill curriculum and its assessment model into V2, or launch V2 without V1's newest catalogue? |
-| Impact page metrics | Are the 2,500+ students reached and 500+ trained in AI current and approved for public use? |
+| Impact page metrics | Which live aggregates should stay published at launch, and does any figure need a definition change before it is shown? |
 | FUTA taxonomy | Import the verified FUTA taxonomy from V1, or seed it natively in V2? If imported, add V2 `Course` semester/source fields first. |
 
 ---
@@ -358,9 +363,13 @@ replacement is real and the product does not pretend the old feature exists.
   history, CBT review, course and topic detail, in-place password change, split
   settings, 404/offline, light/dark brand theme.
 - Admin: Overview (one aggregate read), Waitlist, Campus, Audit, Imports, Users,
-  Opportunities, Projects, Review, Money, Content, Announcements, Platform,
-  Security, admin 404, application status action, payout-item failure action and
-  bulk actions on review, money and content.
+  Opportunities, Projects, Review, Money, Content, Public site, Announcements,
+  Platform, Security, admin 404, application status action, payout-item failure
+  action and bulk actions on review, money and content.
+- Public data: `/impact` reads live aggregates and the admin Public site screen
+  previews and publishes or hides them.
+- Instrumentation: PostHog page views and `$exception` reports in web and admin,
+  plus API journey events and unhandled-error reports.
 - Comms: announcement compose/publish/archive with audience filtering, the
   newsletter subscriber list, a footer opt-in, the in-app banner, the mobile feed
   card and `/newsletter/unsubscribe`.
@@ -381,8 +390,9 @@ replacement is real and the product does not pretend the old feature exists.
 - Google SSO (deferred).
 - Offline submission sync (deferred).
 - Double opt-in confirmation for new newsletter subscribers.
-- Analytics/error tracking (before launch).
-- Real business content, photography and the approved image set.
+- Real business content, team/campus photography and the approved image set.
+- Setting the PostHog keys and confirming one event and one test exception in the
+  dashboard (no key is set in the current local environment).
 
 ### New, not parity (built 2026-11-19)
 
@@ -394,9 +404,9 @@ replacement is real and the product does not pretend the old feature exists.
 
 ## 9. What not to carry from V1
 
-- Hardcoded “2,500+” students or any unverified social proof. V1 now repeats
-  those figures on `/impact`; do not copy them into V2 until the business owner
-  confirms they are current and defensible.
+- Hardcoded “2,500+” students or any unverified social proof. V1 repeated those
+  figures on `/impact`; V2 uses live aggregates instead, and V1's landing band was
+  changed to the real account count on 2026-11-23.
 - The hardcoded LASU map/count mismatch.
 - Placeholder social links (`example.com`) or `support@localhost`.
 - The retired community/live/reels front doors or their admin consoles.

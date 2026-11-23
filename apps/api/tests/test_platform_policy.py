@@ -15,6 +15,7 @@ from factories import (
     make_skill,
     make_template,
     make_user,
+    verify,
 )
 from sqlalchemy import select
 
@@ -302,3 +303,62 @@ def _payable_setup(db, *, task_count: int = 1):
     line = ledger.record_approval_earning(db, project=project, submission=submission)
     ledger.mark_payable(db, project)
     return ops, creator, student, project, line
+
+
+def test_public_impact_reports_real_counts_and_no_student_detail(api) -> None:
+    client, db = api
+    student = make_user(db)
+    make_user(db, ROLE_SUPER_ADMIN)
+    skill = make_skill(db)
+    verify(db, student, skill)
+
+    response = client.get(f"{PREFIX}/platform/impact")
+
+    assert response.status_code == 200, response.text
+    body = response.json()
+    assert body["enabled"] is True
+    by_key = {row["key"]: row for row in body["metrics"]}
+    assert by_key["students"]["value"] == 1
+    assert by_key["published_skills"]["value"] == 1
+    assert by_key["verified_skills"]["value"] == 1
+    assert by_key["assessments_passed"]["value"] == 0
+    assert body["paid_by_currency"] == []
+    # Aggregate contract: the response carries counts and definitions, never a
+    # row that could identify a student.
+    assert set(body["metrics"][0]) == {"key", "label", "value", "detail"}
+    assert student.email not in response.text
+
+
+def test_impact_publication_can_be_switched_off_from_platform_settings(api) -> None:
+    client, db = api
+    super_admin = make_user(db, ROLE_SUPER_ADMIN)
+    make_skill(db)
+
+    refused = client.patch(
+        f"{PREFIX}/platform/settings",
+        json={"impact_metrics_enabled": False},
+        headers=_headers(make_ops(db)),
+    )
+    assert refused.status_code == 403
+
+    changed = client.patch(
+        f"{PREFIX}/platform/settings",
+        json={"impact_metrics_enabled": False},
+        headers=_headers(super_admin),
+    )
+    assert changed.status_code == 200, changed.text
+    assert changed.json()["impact_metrics_enabled"] is False
+
+    public = client.get(f"{PREFIX}/platform/impact").json()
+    assert public["enabled"] is False
+    assert public["metrics"] == []
+    assert public["paid_by_currency"] == []
+
+    preview = client.get(
+        f"{PREFIX}/platform/impact/admin", headers=_headers(super_admin)
+    )
+    assert preview.status_code == 200, preview.text
+    assert preview.json()["enabled"] is False
+    assert {row["key"]: row["value"] for row in preview.json()["metrics"]}[
+        "published_skills"
+    ] == 1

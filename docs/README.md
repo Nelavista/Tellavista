@@ -14,7 +14,9 @@ For the V2 web launch, read these first:
 Gate 1 (route map) and Gate 2 (design direction) were approved on 2026-10-27.
 The newsletter opt-in and unsubscribe, the platform announcement banner and the
 admin announcement screen are built (2026-11-19); double opt-in and a separate
-issue builder remain open.
+issue builder remain open. Live impact metrics, the admin Public site publish
+control and PostHog analytics/error tracking landed on 2026-11-23; the founder
+biography and portrait were removed from the public surface.
 
 **Post-build V1 delta (2026-11-04):** V1 `main` added the African Languages Lab,
 language profile, structured scored tasks, `/impact` and the FUTA taxonomy after

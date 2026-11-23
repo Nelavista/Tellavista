@@ -118,6 +118,9 @@ def _landing_stats():
         'skill_count': qualifying_skill_count,
         'skills_tabs': skills_tabs,
         'university_count': university_count,
+        # Real account count, not a marketing figure. The landing stat band used
+        # to hardcode "2,500+ students"; the page now reads what the table holds.
+        'student_count': User.query.count(),
     }
 
 dashboard_bp = Blueprint('dashboard', __name__)

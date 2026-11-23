@@ -1,6 +1,7 @@
 import { TriangleAlert } from 'lucide-react';
 import * as React from 'react';
 
+import { reportError } from '../lib/telemetry';
 import { EditorialImage } from './EditorialImage';
 
 interface State {
@@ -15,9 +16,14 @@ export class ErrorBoundary extends React.Component<{ children: React.ReactNode }
   }
 
   override componentDidCatch(error: Error, info: React.ErrorInfo): void {
-    // Keep the console useful in local/dev. A real error tracker is a launch
-    // dependency; do not pretend this is one.
+    // The console stays useful locally; the report reaches PostHog when this
+    // build carries a key. A failed report never replaces the error screen.
     console.error('Nelavista UI error', error, info.componentStack);
+    reportError(error, {
+      source: 'react-error-boundary',
+      component_stack: info.componentStack ?? '',
+      path: window.location.pathname,
+    });
   }
 
   override render(): React.ReactNode {
@@ -30,8 +36,8 @@ export class ErrorBoundary extends React.Component<{ children: React.ReactNode }
             <p className="nv-404__code">Something broke</p>
             <h1 className="nv-h1">This screen did not finish loading.</h1>
             <p className="nv-lede">
-              Your account and saved work are safe. Reload the page. If it keeps happening, send the
-              reference below to support.
+              Your account and saved work are safe. Reload the page. If it keeps happening, send the reference
+              below to support.
             </p>
             <pre className="nv-code" aria-label="Error reference">
               <code>{this.state.error.message || 'Unknown UI error'}</code>

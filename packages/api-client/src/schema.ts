@@ -176,6 +176,10 @@ export type PlatformSettingsIn = Schemas['PlatformSettingsIn'];
 export type EligibilityOut = Schemas['EligibilityOut'];
 export type ConsentOut = Schemas['ConsentOut'];
 export type ConsentListOut = Schemas['ConsentListOut'];
+/** Live product aggregates published on /impact. */
+export type ImpactMetricOut = Schemas['ImpactMetricOut'];
+export type ImpactMoneyOut = Schemas['ImpactMoneyOut'];
+export type ImpactOut = Schemas['ImpactOut'];
 
 // --- Language profile (ALL) --------------------------------------------------
 export type LanguageCapabilityOut = Schemas['LanguageCapabilityOut'];

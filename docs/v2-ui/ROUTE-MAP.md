@@ -22,8 +22,8 @@ states are closed:
   settings routes, notifications, applications, CBT history, course and topic
   detail, campus, transcript, talent share, admin shell, Overview, Waitlist,
   Campus, Audit, Imports, Users, Opportunities, Projects, Review, Money, Content,
-  Announcements, Platform, Security, public 404, admin 404, error boundary and
-  offline.
+  Public site, Announcements, Platform, Security, public 404, admin 404, error
+  boundary and offline.
 - **Comms and bulk routes (2026-11-19):** `/newsletter/unsubscribe` plus the
   footer opt-in, the in-app announcement banner, `#/announcements` (which also
   holds the newsletter subscriber list), `GET /ops/overview`, and bulk actions on
@@ -49,7 +49,7 @@ in `PARITY.md` §1.2:
 
 | V1 route | V1 screen / job | V2 state | Notes |
 |---|---|---|---|
-| `/impact` | Public impact page; current product outcomes and verified metrics when available | **Implemented qualitatively** | No reach figures, testimonials or partner claims are published until verified against a current source and approved. |
+| `/impact` | Public impact page; current product outcomes and verified metrics when available | **Implemented with live metrics** | Reads `GET /platform/impact`; every figure is a count of current rows. Ops can withdraw the block from `#/site`. No testimonials or partner claims are published. |
 | `/skills/african-languages` | African Languages Lab hub; 9 categories, 94 skills, language/level filters, tracks, language profile summary | **Implemented** | Lists the ALL tracks from `GET /skills/career-tracks` with search, language and level filters. |
 | `/skills/languages` | Own language profile; add/update self-reported language, dialect, proficiency and capabilities; academic background | **Implemented** | Uses `user_languages`; verified capabilities are derived read-only from verified language-specific skills. |
 | `/skills/languages/:id/delete` | POST action to remove a language from the profile | **Implemented** | Confirmed before delete; on the same route family as the profile. |
@@ -89,7 +89,7 @@ stored, so a track is an ordered suggestion rather than a learning path.
 | `/how-it-works` | How it works | Explain Learn → Prove → Work → Earn | **Create your account** | Four-step chain, eligibility/verification explanation, payout explanation, what Nelavista does not claim | Static | Static | Public |
 | `/pricing` | Pricing | Explain the commercial model without inventing amounts | **Create your account / Talk to us** | Student launch position, employer scoped quote, university pilot agreement, what a quote covers, what is not charged | Static | Static | Public |
 | `/about` | About | Explain why Nelavista exists | **Create your account** | Mission, operating principles, editorial working-record illustration, what the product refuses to fake | Static | Static | Public |
-| `/impact` | Impact | Explain current product outcomes without unsupported claims | **See how it works** | Qualitative outcomes, evidence standards and a clear statement that numeric claims require verification | Static | Static | Public |
+| `/impact` | Impact | Explain current product outcomes without unsupported claims | **See how it works** | Qualitative outcomes, evidence standards and live database aggregates | `GET /platform/impact` | Loading, unavailable, hidden-by-ops, published | Public |
 | `/contact` | Contact | Give a real support path | **Email support** | Support email, response expectation, topics (account, verification, payouts, employers), FAQ link | Static | Static | Public |
 | `/faq` | FAQ | Answer the obvious objections | **Create your account** | Is it free? How verification works, how payouts work, data/privacy, eligibility, what happens if a university is missing | Static | Static | Public |
 | `/legal/privacy` | Privacy | Explain data collection and rights | **Contact support** | Plain-language privacy policy, effective date, data list, retention, deletion, third parties, contact | Static | Static | Public |
@@ -248,6 +248,7 @@ Keep the hash router. Group the rail by **Operate** and **Configure**.
 | `#/review` | Review queue | Clear the quality queue | **Oldest pending review** | `GET /work/review-queue`, `/verification/practical/submissions`; reviews, quality standard, override; `POST /work/review-queue/bulk`, `POST /verification/practical/submissions/bulk-review` | Skeleton, empty, error, per-id bulk failures |
 | `#/money` | Money | Resolve payout and ledger exceptions | **Exception / outstanding total** | Financials, ledger, payout batches, reconciliation; `POST /money/payout-items/{id}/fail`; `POST /money/payout-batches/bulk` (approve/cancel; **pay stays single**) | Skeleton, empty, error, per-id bulk failures |
 | `#/content` | Content | Author and publish skills content | **Draft / published item** | `GET /skills`, `/skills/content/*`; create/update; `/lessons/bulk`, `/paths/bulk`, `/tasks/bulk` | Skeleton, empty, error, validation, per-id bulk failures |
+| `#/site` | Public site | Decide what the public page publishes | **Publish / hide impact figures** | `GET /platform/impact/admin`, `GET/PATCH /platform/settings` (`impact_metrics_enabled`) | Skeleton, error, saved, hidden preview |
 | `#/campus` | Campus | Publish and audit campus locations | **Publish / live campus record** | `GET /ops/campus`, `POST /ops/campus`; the read includes hidden rows and publication state | Skeleton, empty, filtered-empty, error, publish success/error |
 | `#/platform` | Platform settings | Set currency, payout, age, terms, curriculum | **Save settings** | `GET/PATCH /platform/settings` | Skeleton, error, saved |
 | `#/security` | Security | Manage staff 2FA and security events | **Current risk / required action** | `POST /auth/2fa/disable`, security events | Loading, error, note |
@@ -355,7 +356,7 @@ Mobile:
 - 220px left rail:
   - **Operate:** Overview, Audit, Imports, Users, Waitlist, Opportunities, Work,
     Review, Money
-  - **Configure:** Content, Campus, Announcements, Platform, Security
+  - **Configure:** Content, Public site, Campus, Announcements, Platform, Security
 - 56px top bar: environment badge, command search, user menu.
 - Dense tables; detail drawer; audit footer.
 
@@ -394,6 +395,8 @@ Mobile:
 | Admin `#/overview` | `GET /ops/overview` |
 | Admin bulk actions | `POST /work/review-queue/bulk`, `POST /verification/practical/submissions/bulk-review`, `POST /money/payout-batches/bulk`, `POST /skills/content/{lessons,paths,tasks}/bulk` |
 | Admin `#/announcements` | `GET/POST /ops/announcements`, `/publish`, `/archive`; `GET/POST/DELETE /ops/newsletter/subscribers` |
+| Public `/impact` | `GET /platform/impact` (public aggregates; empty when ops has withdrawn them) |
+| Admin `#/site` | `GET /platform/impact/admin`, `GET/PATCH /platform/settings` (`impact_metrics_enabled`) |
 | Workspace banner | `GET /announcements`, audience-filtered server-side |
 | Public footer opt-in | `POST /newsletter/subscribe` |
 | `/newsletter/unsubscribe` | `POST /newsletter/unsubscribe` with the per-subscriber token from the email |
@@ -477,9 +480,9 @@ Approved 2026-10-27:
    material upload/analysis is deferred; the replacement is curated materials,
    Ask, CBT and the transcript evidence trail.
 10. **Post-map V1 delta (2026-11-04):** `/impact`, the ALL hub, the language
-    profile and structured scored tasks are new V1 scope. They are not added to
-    the V2 route contract until the product decision is taken; if approved, add
-    them here first and then build them.
+    profile and structured scored tasks are new V1 scope. They were approved and
+    built; `/impact` now reads live aggregates and the admin `#/site` route
+    controls publication. *(Updated 2026-11-23.)*
 
 Gate 2 (design direction) was approved on the same date. The first build change
 is the token and primitive foundation, not a page.

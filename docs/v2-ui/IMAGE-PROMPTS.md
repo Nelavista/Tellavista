@@ -328,7 +328,7 @@ name, a university, an earnings figure or a testimonial into an image prompt.
 
 ## Needs my input
 
-- Real founder and team photography, with consent.
+- Real team and campus photography, with consent. Founder photography is no longer needed: the founder biography and portrait were withdrawn from the public site on 2026-11-23.
 - Licensed campus photography, if the About page should show a real campus.
 - The final OG card wording and any real metric that is safe to publish.
 - Whether the `maintenance` state will be enabled at launch.

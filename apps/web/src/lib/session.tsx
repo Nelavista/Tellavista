@@ -11,6 +11,7 @@ import * as React from 'react';
 
 import { http, refreshSession, setAccessToken } from './http';
 import { clearApiCache } from './offline';
+import { identify, reset as resetTelemetry } from './telemetry';
 
 export type SessionStatus = 'loading' | 'anonymous' | 'authenticated';
 
@@ -44,6 +45,10 @@ export function SessionProvider({ children }: { children: React.ReactNode }): JS
     setProfile(prof);
     setStatus('authenticated');
   }, []);
+
+  React.useEffect(() => {
+    if (me) identify(me.id, { role: me.role ?? 'student' });
+  }, [me]);
 
   React.useEffect(() => {
     let cancelled = false;
@@ -110,6 +115,7 @@ export function SessionProvider({ children }: { children: React.ReactNode }): JS
       setMe(null);
       setProfile(null);
       setStatus('anonymous');
+      resetTelemetry();
     }
   }, []);
 

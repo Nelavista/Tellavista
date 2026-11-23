@@ -13,6 +13,7 @@ import {
   SearchCheck,
   Settings2,
   ShieldCheck,
+  Globe2,
   Upload,
   UserPlus,
   Users,
@@ -56,6 +57,7 @@ const GROUPS: Array<{ label: string; items: NavItem[] }> = [
     label: 'Content',
     items: [
       { path: '/content', label: 'Content', icon: FileText },
+      { path: '/site', label: 'Public site', icon: Globe2 },
       { path: '/announcements', label: 'Announcements', icon: Megaphone },
       { path: '/campus', label: 'Campus', icon: Building2 },
       { path: '/platform', label: 'Platform settings', icon: Settings2 },
@@ -94,6 +96,7 @@ const TITLES: Array<[string, string]> = [
   ['/review', 'Review queue'],
   ['/money', 'Money'],
   ['/content', 'Content'],
+  ['/site', 'Public site'],
   ['/campus', 'Campus'],
   ['/platform', 'Platform settings'],
   ['/security', 'Security'],

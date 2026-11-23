@@ -64,6 +64,7 @@ EDITABLE_FIELDS: tuple[str, ...] = (
     "curriculum_license",
     "curriculum_authoring_model",
     "target_launch_date",
+    "impact_metrics_enabled",
 )
 
 
@@ -84,6 +85,7 @@ def _defaults() -> dict[str, Any]:
         "curriculum_license": DEFAULT_CURRICULUM_LICENSE,
         "curriculum_authoring_model": "in_house",
         "target_launch_date": None,
+        "impact_metrics_enabled": True,
     }
 
 
@@ -309,6 +311,7 @@ def admin_payload(row: PlatformSettings) -> dict[str, Any]:
             "payout_second_approver_threshold_minor": row.payout_second_approver_threshold_minor,
             "payout_second_approver_always": row.payout_second_approver_always,
             "payout_require_verified_email": row.payout_require_verified_email,
+            "impact_metrics_enabled": row.impact_metrics_enabled,
             "updated_by": row.updated_by,
         }
     )

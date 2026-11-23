@@ -65,6 +65,29 @@ describe('public routes', () => {
         if (String(url).endsWith('/auth/refresh')) {
           return Promise.resolve(jsonResponse(401, { error: { code: 'unauthenticated' } }));
         }
+        if (String(url).endsWith('/platform/impact')) {
+          return Promise.resolve(
+            jsonResponse(200, {
+              generated_at: '2026-11-23T10:00:00Z',
+              enabled: true,
+              metrics: [
+                {
+                  key: 'published_skills',
+                  label: 'Published skills',
+                  value: 94,
+                  detail: 'Skills a student can learn and be assessed in.',
+                },
+                {
+                  key: 'verified_skills',
+                  label: 'Verified skills',
+                  value: 0,
+                  detail: 'Skill verifications backed by an assessment or practical task.',
+                },
+              ],
+              paid_by_currency: [],
+            }),
+          );
+        }
         return Promise.resolve(jsonResponse(404, { error: { code: 'not_found' } }));
       }),
     );
@@ -98,13 +121,18 @@ describe('public routes', () => {
     });
   });
 
-  it('renders the impact page without unverified numeric claims', async () => {
+  it('renders the impact page with the live figures the API returns', async () => {
     const { container } = render('/impact');
     await waitFor(() => {
       expect(container.textContent).toContain('Make the work easier to trust.');
+      expect(container.textContent).toContain('Published skills');
+      expect(container.textContent).toContain('94');
       expect(document.title).toBe('Impact | Nelavista');
     });
-    expect(container.textContent).toContain('publishes no reach figures');
+    // A zero is shown rather than hidden; the page does not substitute copy for
+    // a count the database actually returned.
+    expect(container.textContent).toContain('Verified skills');
+    expect(container.textContent).not.toContain('publishes no reach figures');
   });
 
   it('renders the offline page', async () => {

@@ -17,6 +17,7 @@ from sqlalchemy.orm import Session
 from app.api.deps import get_current_user
 from app.api.v1.domains.platform.schemas import (
     EligibilityOut,
+    ImpactOut,
     PlatformConfigOut,
     PlatformSettingsIn,
     PlatformSettingsOut,
@@ -24,6 +25,7 @@ from app.api.v1.domains.platform.schemas import (
 from app.core.authz import require_permission
 from app.db.session import get_db
 from app.models.identity import User
+from app.services.platform import impact as impact_service
 from app.services.platform import settings as policy
 
 router = APIRouter(prefix="/platform", tags=["platform"])
@@ -35,6 +37,31 @@ def config(db: Session = Depends(get_db)) -> PlatformConfigOut:
     row = policy.get_platform_settings(db)
     db.commit()
     return PlatformConfigOut(**policy.public_config(row))
+
+
+@router.get("/impact", response_model=ImpactOut)
+def public_impact(db: Session = Depends(get_db)) -> ImpactOut:
+    """Public: live product aggregates for the impact page.
+
+    When publishing is switched off the response still says so, but the figures
+    are not sent at all. A hidden number is not left to the client to hide.
+    """
+    row = policy.get_platform_settings(db)
+    payload = impact_service.payload(db, row, public=True)
+    db.commit()
+    return ImpactOut(**payload)
+
+
+@router.get("/impact/admin", response_model=ImpactOut)
+def admin_impact(
+    _actor: User = Depends(require_permission("settings.read")),
+    db: Session = Depends(get_db),
+) -> ImpactOut:
+    """Staff preview: every figure, including a block that is not published."""
+    row = policy.get_platform_settings(db)
+    payload = impact_service.payload(db, row, public=False)
+    db.commit()
+    return ImpactOut(**payload)
 
 
 @router.get("/settings", response_model=PlatformSettingsOut)

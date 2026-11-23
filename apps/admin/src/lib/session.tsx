@@ -6,6 +6,7 @@ import type { MeOut, MfaStatusOut, TokenOut } from '@nelavista/api-client';
 import * as React from 'react';
 
 import { ApiError, http, refreshSession, setAccessToken } from './http';
+import { reset as resetTelemetry } from './telemetry';
 
 type Status = 'loading' | 'anonymous' | 'authenticated';
 
@@ -96,6 +97,7 @@ export function SessionProvider({ children }: { children: React.ReactNode }): JS
       setMe(null);
       setMfa(null);
       setStatus('anonymous');
+      resetTelemetry();
     }
   }, []);
 

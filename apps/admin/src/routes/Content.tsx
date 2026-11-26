@@ -24,6 +24,9 @@ import { useResource } from '../lib/resource';
 
 type Created = { id: number; slug: string; status: string };
 
+/** The bulk endpoint is chosen by type, so an id can never land in the wrong table. */
+type BulkKind = 'lessons' | 'paths' | 'tasks';
+
 const INPUT_EXAMPLE = JSON.stringify({ options: [{ key: 'positive', label: 'Positive' }] }, null, 2);
 const ANSWER_EXAMPLE = JSON.stringify({ type: 'object', properties: { key: { type: 'string' } } }, null, 2);
 
@@ -44,6 +47,15 @@ export function Content(): JSX.Element {
   // Bulk selection: a lesson set is authored together and published together, so
   // one action applies to every ticked row. The report comes back per id.
   const [selectedLessons, setSelectedLessons] = React.useState<number[]>([]);
+  const [selectedPaths, setSelectedPaths] = React.useState<number[]>([]);
+  const [selectedTemplates, setSelectedTemplates] = React.useState<number[]>([]);
+  // A selection belongs to the list it was made in; changing the skill filter
+  // swaps the list, so ticked ids that are no longer visible must not be acted on.
+  React.useEffect(() => {
+    setSelectedLessons([]);
+    setSelectedPaths([]);
+    setSelectedTemplates([]);
+  }, [skillId]);
   const [lessonSlug, setLessonSlug] = React.useState('');
   const [lessonTitle, setLessonTitle] = React.useState('');
   const [lessonBody, setLessonBody] = React.useState('');
@@ -101,24 +113,33 @@ export function Content(): JSX.Element {
     }
   }
 
-  function toggleLesson(id: number): void {
-    setSelectedLessons((current) => toggleId(current, id));
-  }
+  const bulkTargets: Record<BulkKind, { ids: number[]; clear: () => void; reload: () => void; noun: string }> = {
+    lessons: { ids: selectedLessons, clear: () => setSelectedLessons([]), reload: lessons.reload, noun: 'lessons' },
+    paths: { ids: selectedPaths, clear: () => setSelectedPaths([]), reload: paths.reload, noun: 'paths' },
+    tasks: {
+      ids: selectedTemplates,
+      clear: () => setSelectedTemplates([]),
+      reload: templates.reload,
+      noun: 'templates',
+    },
+  };
 
-  async function bulkLessonStatus(status: string): Promise<void> {
-    if (selectedLessons.length === 0) return;
+  async function bulkStatus(kind: BulkKind, status: string): Promise<void> {
+    const target = bulkTargets[kind];
+    if (target.ids.length === 0) return;
     setBusy(true);
     setError(null);
+    setNote(null);
     try {
-      const result = await http.post<BulkResultOut>('/skills/content/lessons/bulk', {
-        ids: selectedLessons,
+      const result = await http.post<BulkResultOut>(`/skills/content/${kind}/bulk`, {
+        ids: target.ids,
         status,
       });
       setNote(bulkNote(result, status));
-      setSelectedLessons([]);
-      lessons.reload();
+      target.clear();
+      target.reload();
     } catch (err) {
-      setError(err instanceof ApiError ? err.message : 'Could not change those lessons.');
+      setError(err instanceof ApiError ? err.message : `Could not change those ${target.noun}.`);
     } finally {
       setBusy(false);
     }
@@ -315,44 +336,13 @@ export function Content(): JSX.Element {
         ) : null}
         {lessons.resource.status === 'ready' && lessons.resource.data.lessons.length > 0 ? (
           <>
-          {selectedLessons.length > 0 ? (
-            <div className="nv-bulk-bar">
-              <span>
-                {selectedLessons.length} lesson{selectedLessons.length === 1 ? '' : 's'} selected
-              </span>
-              <button
-                className="nv-button nv-button--sm"
-                disabled={busy}
-                type="button"
-                onClick={() => void bulkLessonStatus('published')}
-              >
-                Publish selected
-              </button>
-              <button
-                className="nv-button nv-button--ghost nv-button--sm"
-                disabled={busy}
-                type="button"
-                onClick={() => void bulkLessonStatus('draft')}
-              >
-                Unpublish
-              </button>
-              <button
-                className="nv-button nv-button--ghost nv-button--sm"
-                disabled={busy}
-                type="button"
-                onClick={() => void bulkLessonStatus('archived')}
-              >
-                Archive
-              </button>
-              <button
-                className="nv-button nv-button--ghost nv-button--sm"
-                type="button"
-                onClick={() => setSelectedLessons([])}
-              >
-                Clear
-              </button>
-            </div>
-          ) : null}
+          <StatusBulkBar
+            busy={busy}
+            count={selectedLessons.length}
+            noun="lesson"
+            onApply={(status) => void bulkStatus('lessons', status)}
+            onClear={() => setSelectedLessons([])}
+          />
           <div className="nv-table-wrap">
             <table className="nv-table">
               <thead>
@@ -375,7 +365,7 @@ export function Content(): JSX.Element {
                         aria-label={`Select ${row.title}`}
                         checked={selectedLessons.includes(row.id)}
                         type="checkbox"
-                        onChange={() => toggleLesson(row.id)}
+                        onChange={() => setSelectedLessons((current) => toggleId(current, row.id))}
                       />
                     </td>
                     <td>
@@ -486,10 +476,21 @@ export function Content(): JSX.Element {
           <EmptyState title="No path yet" body="Create a draft path above, then add its first step." />
         ) : null}
         {paths.resource.status === 'ready' && paths.resource.data.paths.length > 0 ? (
+          <>
+          <StatusBulkBar
+            busy={busy}
+            count={selectedPaths.length}
+            noun="path"
+            onApply={(status) => void bulkStatus('paths', status)}
+            onClear={() => setSelectedPaths([])}
+          />
           <div className="nv-table-wrap">
             <table className="nv-table">
               <thead>
                 <tr>
+                  <th scope="col">
+                    <span className="nv-sr-only">Select</span>
+                  </th>
                   <th scope="col">Path</th>
                   <th scope="col">Status</th>
                   <th scope="col">Steps</th>
@@ -501,6 +502,14 @@ export function Content(): JSX.Element {
               <tbody>
                 {paths.resource.data.paths.map((row) => (
                   <tr key={row.id}>
+                    <td>
+                      <input
+                        aria-label={`Select ${row.title}`}
+                        checked={selectedPaths.includes(row.id)}
+                        type="checkbox"
+                        onChange={() => setSelectedPaths((current) => toggleId(current, row.id))}
+                      />
+                    </td>
                     <td>
                       {row.title}
                       <div className="nv-muted">
@@ -539,6 +548,7 @@ export function Content(): JSX.Element {
               </tbody>
             </table>
           </div>
+          </>
         ) : null}
 
         <h3 className="nv-h2">Add a step</h3>
@@ -705,10 +715,22 @@ export function Content(): JSX.Element {
           />
         ) : null}
         {templates.resource.status === 'ready' && templates.resource.data.templates.length > 0 ? (
+          <>
+          <StatusBulkBar
+            busy={busy}
+            count={selectedTemplates.length}
+            hint="Publishing creates a new version of each template."
+            noun="template"
+            onApply={(status) => void bulkStatus('tasks', status)}
+            onClear={() => setSelectedTemplates([])}
+          />
           <div className="nv-table-wrap">
             <table className="nv-table">
               <thead>
                 <tr>
+                  <th scope="col">
+                    <span className="nv-sr-only">Select</span>
+                  </th>
                   <th scope="col">Template</th>
                   <th scope="col">Validator</th>
                   <th scope="col">Version</th>
@@ -721,6 +743,14 @@ export function Content(): JSX.Element {
               <tbody>
                 {templates.resource.data.templates.map((row) => (
                   <tr key={row.id}>
+                    <td>
+                      <input
+                        aria-label={`Select ${row.name}`}
+                        checked={selectedTemplates.includes(row.id)}
+                        type="checkbox"
+                        onChange={() => setSelectedTemplates((current) => toggleId(current, row.id))}
+                      />
+                    </td>
                     <td>
                       {row.name}
                       <div className="nv-muted">
@@ -768,8 +798,62 @@ export function Content(): JSX.Element {
               </tbody>
             </table>
           </div>
+          </>
         ) : null}
       </Panel>
+    </div>
+  );
+}
+
+/**
+ * One bar for every content list: the three statuses are the same everywhere,
+ * only the noun and the endpoint differ. Hidden until something is ticked.
+ */
+function StatusBulkBar({
+  busy,
+  count,
+  hint,
+  noun,
+  onApply,
+  onClear,
+}: {
+  busy: boolean;
+  count: number;
+  hint?: string;
+  noun: string;
+  onApply: (status: string) => void;
+  onClear: () => void;
+}): JSX.Element | null {
+  if (count === 0) return null;
+  return (
+    <div className="nv-bulk-bar">
+      <span>
+        {count} {noun}
+        {count === 1 ? '' : 's'} selected
+      </span>
+      <button className="nv-button nv-button--sm" disabled={busy} type="button" onClick={() => onApply('published')}>
+        Publish selected
+      </button>
+      <button
+        className="nv-button nv-button--ghost nv-button--sm"
+        disabled={busy}
+        type="button"
+        onClick={() => onApply('draft')}
+      >
+        Unpublish
+      </button>
+      <button
+        className="nv-button nv-button--ghost nv-button--sm"
+        disabled={busy}
+        type="button"
+        onClick={() => onApply('archived')}
+      >
+        Archive
+      </button>
+      <button className="nv-button nv-button--ghost nv-button--sm" type="button" onClick={onClear}>
+        Clear
+      </button>
+      {hint ? <span className="nv-muted">{hint}</span> : null}
     </div>
   );
 }

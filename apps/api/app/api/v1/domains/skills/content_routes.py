@@ -277,6 +277,10 @@ def bulk_template_status(
             raise ApiError(404, "template_not_found", f"Template {template_id} does not exist.")
         if template.status == target:
             return "unchanged"
+        if target == "published":
+            # Same rule as the single PATCH: publishing is a new version, so work
+            # already graded keeps pointing at the definition it was graded against.
+            template.version = template.version + 1
         template.status = target
         return "applied"
 

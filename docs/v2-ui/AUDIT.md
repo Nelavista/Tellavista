@@ -196,9 +196,9 @@ business content and the manual launch checks remain.
 - Shared page header, panels, skeletons, error states and empty states.
 - Admin unknown routes render a real 404.
 - Bulk actions on the work review queue, money (approve/cancel; pay stays
-  single-record on purpose) and content lessons, each answering a per-id
-  applied/unchanged/failed report. Practical-submission, path and task bulk
-  endpoints exist but have no admin bar yet (§6.1).
+  single-record on purpose), content lessons, paths and task templates, and
+  practical submissions, each answering a per-id applied/unchanged/failed
+  report.
 - One aggregate overview read with queue counts, their timestamps, live projects
   and recent audit rows.
 - An enforced application lifecycle with allowed next states, a decision stamp
@@ -255,8 +255,6 @@ refers to.
 | `GET /talent/me/transcript` | Duplicate of the transcript read used by `/verification/transcript`. | Leave unused; do not build a second transcript screen. |
 | `GET /talent/students/{user_id}` | Admin uses `GET /talent/directory`; no screen reads one student's talent profile by id. | Leave unused until a support-detail drawer needs it. |
 | `GET /opportunities/{slug}/gaps` | The opportunity detail embeds the verdict, reasons and blocks in its own response, so no screen calls the standalone gaps read. | Leave unused; keep the embedded contract authoritative. |
-| `POST /skills/content/paths/bulk`, `POST /skills/content/tasks/bulk` | Built and tested; admin Content's bulk bar only covers lessons. | Add path/task selection, or leave API-only. |
-| `POST /verification/practical/submissions/bulk-review` | Built and tested; admin Review's bulk bar only covers the work review queue. | Add a practical-submission bulk bar, or leave API-only. |
 | `GET /onboarding/sessions/{session_id}/semesters` | Onboarding reads only the current session. | Leave unused until a semester picker exists. |
 | `REDIS_URL` | Declared in API config, read nowhere. Rate limits use an in-process store. | Wire before running more than one API instance; otherwise each process keeps its own limits. |
 | `FLAG_EXTERNAL_OPPORTUNITIES` | Only widens the opportunities router guard; no external-listing feature exists behind it. | Keep off; it is a placeholder, not a hidden feature. |

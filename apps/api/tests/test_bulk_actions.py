@@ -27,7 +27,8 @@ from sqlalchemy import func, select
 from app.core.security import create_access_token
 from app.models.ledger import PayoutBatch
 from app.models.quality import QualityReview
-from app.models.skills import LearningPath, Lesson
+from app.models.skills import LearningPath, Lesson, TaskTemplate
+from app.models.verification import PracticalSubmission, PracticalTask
 from app.models.work import Submission
 from app.services.money import ledger, payouts
 
@@ -161,6 +162,129 @@ def test_content_bulk_cannot_publish_a_path_by_lesson_id(api) -> None:
     assert body["applied"] == 1
     assert db.get(LearningPath, path.id).status == "published"
 
+
+def test_content_bulk_publishing_a_template_bumps_its_version(api) -> None:
+    """Bulk publish follows the single PATCH: each publish is a new version, so
+    work graded against the old definition keeps pointing at it."""
+    client, db = api
+    editor = make_ops(db)
+    skill = make_skill(db)
+    draft = make_template(db, skill, status="draft", version=1)
+    live = make_template(db, skill, status="published", version=3)
+    db.commit()
+
+    body = client.post(
+        "/v1/skills/content/tasks/bulk",
+        json={"ids": [draft.id, live.id], "status": "published"},
+        headers=_headers(editor),
+    ).json()
+
+    assert body["applied"] == 1
+    assert body["unchanged"] == 1
+    db.expire_all()
+    assert db.get(TaskTemplate, draft.id).version == 2
+    assert db.get(TaskTemplate, live.id).version == 3  # unchanged rows keep theirs
+
+
+def test_content_bulk_archiving_a_template_keeps_its_version(api) -> None:
+    client, db = api
+    editor = make_ops(db)
+    template = make_template(db, make_skill(db), status="published", version=2)
+    db.commit()
+
+    body = client.post(
+        "/v1/skills/content/tasks/bulk",
+        json={"ids": [template.id, 999_999], "status": "archived"},
+        headers=_headers(editor),
+    ).json()
+
+    assert body["applied"] == 1
+    assert body["failed"][0]["code"] == "template_not_found"
+    db.expire_all()
+    row = db.get(TaskTemplate, template.id)
+    assert (row.status, row.version) == ("archived", 2)
+
+
+# --- practical review -------------------------------------------------------
+
+
+def _practical_submissions(db, *, count: int = 2) -> list[int]:
+    task = PracticalTask(
+        skill_id=make_skill(db).id,
+        slug=unique("practical"),
+        title="Annotate ten rows",
+        brief_md="Label each row.",
+        status="published",
+    )
+    db.add(task)
+    db.flush()
+    rows = [
+        PracticalSubmission(
+            practical_task_id=task.id, user_id=make_user(db).id, payload={"summary": "done"}
+        )
+        for _ in range(count)
+    ]
+    db.add_all(rows)
+    db.commit()
+    return [row.id for row in rows]
+
+
+def test_practical_bulk_review_scores_a_batch(api) -> None:
+    client, db = api
+    reviewer = make_ops(db)
+    ids = _practical_submissions(db)
+
+    response = client.post(
+        "/v1/verification/practical/submissions/bulk-review",
+        json={"submission_ids": ids, "score": 85, "passed": True, "notes": "Rubric met."},
+        headers=_headers(reviewer),
+    )
+    assert response.status_code == 200, response.text
+    assert response.json()["applied"] == 2
+    db.expire_all()
+    for submission_id in ids:
+        row = db.get(PracticalSubmission, submission_id)
+        assert (row.status, row.passed, row.score, row.reviewed_by) == (
+            "reviewed",
+            True,
+            85,
+            reviewer.id,
+        )
+
+
+def test_practical_bulk_review_names_the_one_already_reviewed(api) -> None:
+    client, db = api
+    reviewer = make_ops(db)
+    first, second = _practical_submissions(db)
+    client.post(
+        f"/v1/verification/practical/submissions/{first}/review",
+        json={"score": 90, "passed": True},
+        headers=_headers(reviewer),
+    )
+
+    body = client.post(
+        "/v1/verification/practical/submissions/bulk-review",
+        json={"submission_ids": [first, second], "score": 0, "passed": False},
+        headers=_headers(reviewer),
+    ).json()
+
+    assert body["applied"] == 1
+    assert [row["id"] for row in body["failed"]] == [first]
+    assert body["failed"][0]["code"] == "already_reviewed"
+    db.expire_all()
+    assert db.get(PracticalSubmission, first).passed is True  # first verdict stands
+
+
+def test_a_student_cannot_bulk_review_practical_work(api) -> None:
+    client, db = api
+    ids = _practical_submissions(db, count=1)
+
+    response = client.post(
+        "/v1/verification/practical/submissions/bulk-review",
+        json={"submission_ids": ids, "score": 90, "passed": True},
+        headers=_headers(make_user(db)),
+    )
+    assert response.status_code == 403
 
 # --- review ----------------------------------------------------------------
 

@@ -117,10 +117,12 @@ Five gaps found in a review of the delivered build, and where each one landed.
   refused, duplicate ids are collapsed, and one bad id never aborts the batch.
   `app/api/v1/bulk.py` is the shared helper; admin Review, Money and Content have
   selection bars that show the per-id failures. Tests: `tests/test_bulk_actions.py`.
-  **Re-checked 2026-11-26:** the admin bars call only `work/review-queue/bulk`,
-  `money/payout-batches/bulk` and `skills/content/lessons/bulk`. The
-  `content/paths/bulk`, `content/tasks/bulk` and
-  `verification/practical/submissions/bulk-review` endpoints are API-only; see §J.
+  **Re-checked 2026-11-26:** the admin bars called only `work/review-queue/bulk`,
+  `money/payout-batches/bulk` and `skills/content/lessons/bulk`. **Closed
+  2026-11-26:** Content now has path and task-template bars and Review has a
+  practical-submission bar (own score; fail asks first). Bulk template publish
+  now bumps the version like the single PATCH. Tests: `tests/test_bulk_actions.py`,
+  `apps/admin/src/bulk-bars.test.tsx`.
 - [x] **H6 — Aggregate overview endpoint.** The ops overview screen made six list
   requests and derived its own numbers, so the counts and the audit trail could
   disagree. `GET /v1/ops/overview` returns every queue with its count and timestamp
@@ -434,8 +436,6 @@ read as an outage. Full context is in `docs/v2-ui/AUDIT.md` §6.1.
 | `GET /talent/me/transcript` | Duplicate of the transcript read used by `/verification/transcript` | Leave unused; do not build a second transcript screen |
 | `GET /talent/students/{user_id}` | Admin uses `GET /talent/directory`; nothing reads one student's talent profile by id | Leave unused until a support-detail drawer needs it |
 | `GET /opportunities/{slug}/gaps` | Opportunity detail embeds the verdict, reasons and blocks, so nothing calls the standalone read | Leave unused; the embedded contract is authoritative |
-| `POST /skills/content/{paths,tasks}/bulk` | Built and tested; admin Content's selection bar only covers lessons | Add path/task selection to Content, or leave API-only |
-| `POST /verification/practical/submissions/bulk-review` | Built and tested; admin Review bulk only covers the work review queue | Add a practical-submission selection bar, or leave API-only |
 | `GET /onboarding/sessions/{session_id}/semesters` | Onboarding reads `/onboarding/sessions/current` only | Leave unused until a semester picker exists |
 | `REDIS_URL` | Declared in `app/core/config.py` but read nowhere; rate limits use the in-process store (F5) | Wire before running more than one API instance, or limits are per process |
 | `FLAG_EXTERNAL_OPPORTUNITIES` | Only widens the opportunities router guard; no external-listing feature sits behind it | Keep off at launch; it is a placeholder, not a hidden feature |

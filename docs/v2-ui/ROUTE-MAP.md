@@ -250,7 +250,7 @@ Keep the hash router. Group the rail by **Operate** and **Configure**.
 | `#/talent` | Talent directory | Find talent by language, level and visibility | **Filtered result** | `GET /talent/directory?language=&language_level=&academic_level=&visibility=&background=` | Skeleton, empty, error, refused for a student account |
 | `#/opportunities` | Opportunities | Create and run opportunities | **Opportunity / applications** | `GET /opportunities/admin/all`, `/{slug}/candidates`, `/{slug}/applications`, `POST /opportunities`, `PATCH /{slug}`, `POST /applications/{id}/status` | Skeleton, empty, error |
 | `#/work` | Projects & cohorts | Run managed projects | **Project / cohort** | `GET /work/projects`, `/{slug}`, `/cohorts/{id}`, `/replacements`; create/assign/invite/remove | Skeleton, empty, error |
-| `#/review` | Review queue | Clear the quality queue | **Oldest pending review** | `GET /work/review-queue`, `/verification/practical/submissions`; reviews, quality standard, override; `POST /work/review-queue/bulk` (the `POST /verification/practical/submissions/bulk-review` endpoint exists but this screen does not call it yet) | Skeleton, empty, error, per-id bulk failures |
+| `#/review` | Review queue | Clear the quality queue | **Oldest pending review** | `GET /work/review-queue`, `/verification/practical/submissions`; reviews, quality standard, override; `POST /work/review-queue/bulk`, `POST /verification/practical/submissions/bulk-review` | Skeleton, empty, error, per-id bulk failures |
 | `#/money` | Money | Resolve payout and ledger exceptions | **Exception / outstanding total** | Financials, ledger, payout batches, reconciliation; `POST /money/payout-items/{id}/fail`; `POST /money/payout-batches/bulk` (approve/cancel; **pay stays single**) | Skeleton, empty, error, per-id bulk failures |
 | `#/content` | Content | Author and publish skills content | **Draft / published item** | `GET /skills`, `/skills/content/*`; create/update; `/lessons/bulk`, `/paths/bulk`, `/tasks/bulk` | Skeleton, empty, error, validation, per-id bulk failures |
 | `#/site` | Public site | Decide what the public page publishes | **Publish / hide impact figures** | `GET /platform/impact/admin`, `GET/PATCH /platform/settings` (`impact_metrics_enabled`) | Skeleton, error, saved, hidden preview |
@@ -402,7 +402,7 @@ Mobile:
 | Admin application status | `POST /opportunities/applications/{id}/status` (refuses a skipped step and returns `allowed_next`) |
 | Admin payout-item failure | `POST /money/payout-items/{id}/fail` |
 | Admin `#/overview` | `GET /ops/overview` |
-| Admin bulk actions | Called: `POST /work/review-queue/bulk`, `POST /money/payout-batches/bulk`, `POST /skills/content/lessons/bulk`. API-only, no admin bar yet: `POST /verification/practical/submissions/bulk-review`, `POST /skills/content/{paths,tasks}/bulk` |
+| Admin bulk actions | Called: `POST /work/review-queue/bulk`, `POST /verification/practical/submissions/bulk-review`, `POST /money/payout-batches/bulk`, `POST /skills/content/{lessons,paths,tasks}/bulk` |
 | Admin `#/announcements` | `GET/POST /ops/announcements`, `/publish`, `/archive`; `GET/POST/DELETE /ops/newsletter/subscribers` |
 | Public `/impact` | `GET /platform/impact` (public aggregates; empty when ops has withdrawn them) |
 | Admin `#/site` | `GET /platform/impact/admin`, `GET/PATCH /platform/settings` (`impact_metrics_enabled`) |

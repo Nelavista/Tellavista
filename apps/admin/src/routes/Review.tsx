@@ -53,6 +53,12 @@ export function Review(): JSX.Element {
   const [reviewed, setReviewed] = React.useState<ReviewOut | null>(null);
 
   const practical = useResource<PracticalQueueOut>('/verification/practical/submissions');
+  // Practical bulk: one rubric read applied to a block, with its own score because
+  // the work-review form is only on screen while a submission is open. Fail scores
+  // 0 and asks first, as the single Fail does.
+  const [practicalIds, setPracticalIds] = React.useState<number[]>([]);
+  const [practicalScore, setPracticalScore] = React.useState('90');
+  const [confirmBulkFail, setConfirmBulkFail] = React.useState(false);
 
   const [projectSlug, setProjectSlug] = React.useState('');
   const [standardName, setStandardName] = React.useState('Annotation standard');
@@ -112,6 +118,28 @@ export function Review(): JSX.Element {
       practical.reload();
     } catch (err) {
       setError(err instanceof ApiError ? err.message : 'Could not record that review.');
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function bulkReviewPractical(passed: boolean): Promise<void> {
+    if (practicalIds.length === 0) return;
+    setBusy(true);
+    setError(null);
+    setNote(null);
+    try {
+      const result = await http.post<BulkResultOut>('/verification/practical/submissions/bulk-review', {
+        submission_ids: practicalIds,
+        score: passed ? Number(practicalScore) : 0,
+        passed,
+        notes: null,
+      });
+      setNote(bulkNote(result, passed ? 'passed' : 'failed'));
+      setPracticalIds([]);
+      practical.reload();
+    } catch (err) {
+      setError(err instanceof ApiError ? err.message : 'Could not record those reviews.');
     } finally {
       setBusy(false);
     }
@@ -388,10 +416,55 @@ export function Review(): JSX.Element {
           />
         ) : null}
         {practical.resource.status === 'ready' && practical.resource.data.submissions.length > 0 ? (
+          <>
+          {practicalIds.length > 0 ? (
+            <div className="nv-bulk-bar">
+              <span>
+                {practicalIds.length} practical submission{practicalIds.length === 1 ? '' : 's'} selected
+              </span>
+              <input
+                aria-label="Score for the selected submissions (0–100)"
+                className="nv-input"
+                inputMode="numeric"
+                max={100}
+                min={0}
+                style={{ width: '5rem' }}
+                type="number"
+                value={practicalScore}
+                onChange={(event) => setPracticalScore(event.target.value)}
+              />
+              <button
+                className="nv-button nv-button--sm"
+                disabled={busy || !validScore(practicalScore)}
+                type="button"
+                onClick={() => void bulkReviewPractical(true)}
+              >
+                Pass selected
+              </button>
+              <button
+                className="nv-button nv-button--danger nv-button--sm"
+                disabled={busy}
+                type="button"
+                onClick={() => setConfirmBulkFail(true)}
+              >
+                Fail selected
+              </button>
+              <button
+                className="nv-button nv-button--ghost nv-button--sm"
+                type="button"
+                onClick={() => setPracticalIds([])}
+              >
+                Clear
+              </button>
+            </div>
+          ) : null}
           <div className="nv-table-wrap">
             <table className="nv-table">
               <thead>
                 <tr>
+                  <th scope="col">
+                    <span className="nv-sr-only">Select</span>
+                  </th>
                   <th scope="col">Submission</th>
                   <th scope="col">Task</th>
                   <th scope="col">Student</th>
@@ -404,6 +477,14 @@ export function Review(): JSX.Element {
               <tbody>
                 {practical.resource.data.submissions.map((row) => (
                   <tr key={row.id}>
+                    <td>
+                      <input
+                        aria-label={`Select practical submission ${row.id}`}
+                        checked={practicalIds.includes(row.id)}
+                        type="checkbox"
+                        onChange={() => setPracticalIds((current) => toggleId(current, row.id))}
+                      />
+                    </td>
                     <td>#{row.id}</td>
                     <td>#{row.practical_task_id}</td>
                     <td>#{row.user_id}</td>
@@ -433,6 +514,7 @@ export function Review(): JSX.Element {
               </tbody>
             </table>
           </div>
+          </>
         ) : null}
       </Panel>
 
@@ -601,6 +683,29 @@ export function Review(): JSX.Element {
         open={pendingFailId !== null}
         title="Fail this practical submission?"
       />
+
+      <ConfirmDialog
+        body={
+          <p>
+            Every selected student sees a failed practical result. Each decision and its evidence remain in
+            the audit trail and cannot be quietly undone here.
+          </p>
+        }
+        busy={busy}
+        confirmLabel={`Fail ${practicalIds.length} submission${practicalIds.length === 1 ? '' : 's'}`}
+        onCancel={() => setConfirmBulkFail(false)}
+        tone="danger"
+        onConfirm={() => {
+          void bulkReviewPractical(false).finally(() => setConfirmBulkFail(false));
+        }}
+        open={confirmBulkFail}
+        title="Fail the selected practical submissions?"
+      />
     </div>
   );
+}
+
+function validScore(value: string): boolean {
+  const n = Number(value);
+  return value.trim() !== '' && Number.isInteger(n) && n >= 0 && n <= 100;
 }

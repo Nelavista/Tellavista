@@ -10,7 +10,7 @@ realistic raw ASR output). An admin can attach `audio_url` to any task later.
 NOTE FOR CONTENT REVIEW: every African-language sentence below should be checked by a
 native-speaker linguist before wide release.
 """
-from ._common import q, lesson, workflow_lesson, task, labeling, number_item, choice_items, project, skill
+from ._common import choice_items, labeling, lesson, number_item, project, q, skill, task, workflow_lesson
 
 CAT = 'transcription'
 COLOR = '#2563eb'

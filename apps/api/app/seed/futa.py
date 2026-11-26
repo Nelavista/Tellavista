@@ -140,4 +140,5 @@ def seed(db: Session) -> dict[str, int]:
             )
             created_courses += 1
     db.flush()
-    return {"universities": 1, "faculties": len(SCHOOLS), "departments": len(departments), "courses": created_courses}
+    return {"universities": 1, "faculties": len(SCHOOLS), "departments": len(departments),
+            "courses": created_courses}

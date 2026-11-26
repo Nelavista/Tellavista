@@ -6,7 +6,17 @@ tables by scripts/seed/seed_all_skills.py.
     SKILLS      every skill dict, each tagged with its category slug
     TRACKS      multi-skill CareerTracks built from ALL skills
 """
-from . import transcription, translation, speech, annotation, ai_data, linguistics, language_tech, quality, work_skills
+from . import (
+    ai_data,
+    annotation,
+    language_tech,
+    linguistics,
+    quality,
+    speech,
+    transcription,
+    translation,
+    work_skills,
+)
 from .beginner import BEGINNER
 
 PROGRAM = 'all'

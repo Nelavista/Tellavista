@@ -3,7 +3,7 @@ student records in the browser and each take is checked against the same technic
 requirements speech-dataset projects use (length, clipping, level, silence). Checking/
 validation skills are gold-labelled judgement tasks.
 """
-from ._common import q, lesson, workflow_lesson, task, labeling, choice_items, project, skill
+from ._common import choice_items, labeling, lesson, project, q, skill, task, workflow_lesson
 
 COLOR = '#7c3aed'
 REQ = {'min_seconds': 1.5, 'max_seconds': 15, 'max_clip_pct': 0.5, 'min_rms_db': -40, 'max_silence_pct': 70}

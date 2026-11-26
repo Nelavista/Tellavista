@@ -24,13 +24,13 @@ from factories import (
 from fastapi.testclient import TestClient
 
 from app.core.security import create_access_token
+from app.models.identity import UserLanguage
 from app.models.skills import (
     STATUS_PUBLISHED,
     LearningPath,
     LearningPathStep,
     Lesson,
 )
-from app.models.identity import UserLanguage
 from app.models.verification import Assessment, AssessmentTask
 
 

@@ -3,7 +3,7 @@ ends in gold-labelled practice and assessment items scored against expected labe
 
 NOTE FOR CONTENT REVIEW: non-English examples should be checked by native speakers.
 """
-from ._common import q, lesson, workflow_lesson, task, labeling, choice_items, project, skill
+from ._common import choice_items, labeling, lesson, project, q, skill, task, workflow_lesson
 
 COLOR = '#0891b2'
 

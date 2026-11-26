@@ -2,7 +2,7 @@
 quality standards, scoring consistently, adjudicating disagreements and measuring
 agreement. Every assessment uses gold QA judgements; several require a QA report.
 """
-from ._common import q, lesson, workflow_lesson, task, labeling, choice_items, number_item, project, skill
+from ._common import choice_items, labeling, lesson, number_item, project, q, skill, task, workflow_lesson
 
 COLOR = '#16a34a'
 

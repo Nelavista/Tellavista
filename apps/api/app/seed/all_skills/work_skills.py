@@ -3,7 +3,7 @@ actually check: following guidelines, confidentiality, privacy, remote work, tim
 management, communication and issue reporting. Practical scenario judgements, not
 motivational content. (General professional guidance, not legal advice.)
 """
-from ._common import q, lesson, workflow_lesson, task, labeling, choice_items, number_item, project, skill
+from ._common import choice_items, labeling, lesson, number_item, project, q, skill, task, workflow_lesson
 
 COLOR = '#475569'
 

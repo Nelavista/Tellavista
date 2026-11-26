@@ -3,7 +3,7 @@ training, response and model evaluation, preference feedback, relevance and safe
 judgements. Tasks are built as simulated project batches with gold judgements, and most
 assessments also require a written rationale (as real evaluation projects do).
 """
-from ._common import q, lesson, workflow_lesson, task, labeling, project, skill
+from ._common import labeling, lesson, project, q, skill, task, workflow_lesson
 
 COLOR = '#4f46e5'
 

@@ -24,8 +24,8 @@ from sqlalchemy.orm import Session
 
 from app.core.errors import ApiError
 from app.core.time import utcnow
-from app.models.talent import TalentShare
 from app.models.identity import UserLanguage
+from app.models.talent import TalentShare
 from app.services.talent import profile as talent
 from app.services.work import delivery
 

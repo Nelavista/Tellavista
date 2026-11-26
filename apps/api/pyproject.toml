@@ -37,6 +37,14 @@ target-version = "py311"
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B"]
 
+# The ALL skill catalogue is prose data: skill descriptions, lesson paragraphs,
+# quiz prompts and assessment rows are long strings whose length is content, not
+# code. Wrapping every literal would split sentences at arbitrary points and make
+# the catalogue harder to read and edit, so only the line-length rule is relaxed
+# here -- import order, unused names and bugbear checks still apply.
+[tool.ruff.lint.per-file-ignores]
+"app/seed/all_skills/*.py" = ["E501"]
+
 # FastAPI's dependency declarations are calls in default arguments by design.
 # They are evaluated once by the framework, not per request, so B008's warning
 # does not apply to them.

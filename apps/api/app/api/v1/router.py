@@ -9,6 +9,7 @@ from fastapi import APIRouter
 
 from app.api.v1 import health
 from app.api.v1.domains.academia import routes as academia_routes
+from app.api.v1.domains.comms import routes as comms_routes
 from app.api.v1.domains.identity import onboarding_routes, profile_routes
 from app.api.v1.domains.identity import routes as identity_routes
 from app.api.v1.domains.money import routes as money_routes
@@ -17,7 +18,6 @@ from app.api.v1.domains.ops import routes as ops_routes
 from app.api.v1.domains.platform import routes as platform_routes
 from app.api.v1.domains.skills import content_routes as skills_content_routes
 from app.api.v1.domains.skills import language_routes as skills_language_routes
-from app.api.v1.domains.comms import routes as comms_routes
 from app.api.v1.domains.skills import routes as skills_routes
 from app.api.v1.domains.talent import routes as talent_routes
 from app.api.v1.domains.verification import routes as verification_routes

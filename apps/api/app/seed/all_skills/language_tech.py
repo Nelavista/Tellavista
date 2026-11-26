@@ -2,7 +2,7 @@
 Python for NLP -> NLP Fundamentals -> Dataset Creation -> Corpus Creation -> Natural
 Language Processing (also sequenced as a CareerTrack in __init__.py).
 """
-from ._common import q, lesson, workflow_lesson, task, labeling, choice_items, number_item, project, skill
+from ._common import choice_items, labeling, lesson, number_item, project, q, skill, task, workflow_lesson
 
 COLOR = '#1d4ed8'
 

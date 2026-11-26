@@ -6,7 +6,7 @@ profile (/skills/languages) — each pair skill carries its own Skill.language.
 NOTE FOR CONTENT REVIEW: all non-English sentences and references should be checked by
 native-speaker translators before wide release; add more references where valid wordings differ.
 """
-from ._common import q, lesson, workflow_lesson, task, labeling, choice_items, project, skill
+from ._common import choice_items, labeling, lesson, project, q, skill, task, workflow_lesson
 
 COLOR = '#0284c7'
 
@@ -53,8 +53,9 @@ def _pair_skill(key, name, slug, core_paras, core_points, core_quiz, practice_it
             out.append({'id': f't{i}', 'source': source, 'references': refs, 'key_terms': terms, 'direction': direction})
         return out
 
-    spec = lambda rows, brief: {'kind': 'translation', 'source_lang': name, 'target_lang': 'English',
-                                'guidelines': STD_GUIDELINES, 'brief': brief, 'items': items(rows), 'ai_feedback': True}
+    def spec(rows, brief):
+        return {'kind': 'translation', 'source_lang': name, 'target_lang': 'English',
+                'guidelines': STD_GUIDELINES, 'brief': brief, 'items': items(rows), 'ai_feedback': True}
     return skill(
         slug, f'{name} ↔ English Translation', level='beginner', language=key,
         tags=['translation', 'african-languages'], icon='ri-translate-2', color=COLOR,

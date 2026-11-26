@@ -11,7 +11,7 @@ then a practice round, a practical assessment and a final (practice) verificatio
 After it, students branch into Transcription, Translation, Annotation, Speech Data,
 AI Evaluation and QA.
 """
-from ._common import q, lesson, task, labeling, choice_items, project
+from ._common import choice_items, labeling, lesson, project, q, task
 
 COLOR = '#2563eb'
 
@@ -232,6 +232,6 @@ BEGINNER = {
                     'practical assessment and a reviewed practice project. Afterwards, branch into Transcription, Translation, '
                     'Annotation, Speech Data, AI Evaluation or QA.'),
     'courses': [C1, C2, C3, C4, C5, C6, C7],
-    'lessons': [l for c in (C1, C2, C3, C4, C5, C6, C7) for l in c['lessons']],
+    'lessons': [entry for c in (C1, C2, C3, C4, C5, C6, C7) for entry in c['lessons']],
     'practice': PRACTICE, 'assessment': {**ASSESSMENT, 'pass_score': 70}, 'project': PROJECT,
 }

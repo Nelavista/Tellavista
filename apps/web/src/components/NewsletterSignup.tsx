@@ -2,11 +2,11 @@
  * The public newsletter opt-in.
  *
  * Sits in the footer of the public site so a visitor who is not ready to make an
- * account can still ask to hear from us. The API is the only thing that decides
- * whether an address is subscribed, and it answers the same way for a new and an
- * existing address - so this form must not claim "you were added" either. It
- * says the address is on the list, which is true in both cases and tells an
- * outsider nothing about who else is subscribed.
+ * account can still ask to hear from us. The list is double opt-in: submitting
+ * only starts the confirmation, so this form asks the reader to check their
+ * inbox and never claims the address is on the list. The API answers the same
+ * way for a new, pending and already-confirmed address, so the wording also
+ * tells an outsider nothing about who is subscribed.
  */
 import type { NewsletterSubscribeOut } from '@nelavista/api-client';
 import * as React from 'react';
@@ -46,9 +46,10 @@ export function NewsletterSignup(): JSX.Element {
   if (state === 'done') {
     return (
       <div className="nv-stack nv-stack--tight" role="status">
-        <p className="nv-h4">You are on the list</p>
+        <p className="nv-h4">Check your inbox</p>
         <p className="nv-muted" style={{ maxWidth: '38ch' }}>
-          We send one note a month: new material, open opportunities and what changed on the platform.
+          If that address has not been confirmed yet, a link is on its way. One click adds you to
+          the monthly note; we send nothing until then.
         </p>
       </div>
     );

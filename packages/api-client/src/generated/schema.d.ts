@@ -2868,14 +2868,42 @@ export interface paths {
         put?: never;
         /**
          * Subscribe To Newsletter
-         * @description Anyone can subscribe; the answer never says whether the address was new,
-         *     so the endpoint cannot be used to test whether someone is on the list.
+         * @description Start a double opt-in: a confirmation link is mailed and the address is
+         *     not on the list until it is clicked.
+         *
+         *     The answer is the same for a new address, a pending one and one that is
+         *     already confirmed, so the endpoint cannot be used to test who is subscribed.
+         *     It says "confirm from your inbox" rather than claiming either state.
          *
          *     Limited by IP inside the handler rather than with the per-user `rate_limit`
          *     dependency: there is no signed-in user here to key the counter on, which is
          *     exactly the case the auth routes already handle this way.
          */
         post: operations["subscribe_to_newsletter_v1_newsletter_subscribe_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/newsletter/confirm": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Confirm Newsletter
+         * @description Finish the opt-in from the link in the confirmation email.
+         *
+         *     The click is the consent, so a second one is not an error. A token that
+         *     matches no row is refused rather than silently accepted: the reader needs to
+         *     know the link did not work, not be told they are on a list they are not on.
+         */
+        post: operations["confirm_newsletter_v1_newsletter_confirm_post"];
         delete?: never;
         options?: never;
         head?: never;
@@ -2902,6 +2930,37 @@ export interface paths {
          */
         post: operations["unsubscribe_from_newsletter_v1_newsletter_unsubscribe_post"];
         delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/me/newsletter": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * My Newsletter Status
+         * @description The signed-in account's own newsletter choice, for the Settings toggle.
+         *
+         *     Keyed by the account email, never by an address in the query string: this
+         *     read must not become a second way to probe someone else's address.
+         */
+        get: operations["my_newsletter_status_v1_me_newsletter_get"];
+        put?: never;
+        /**
+         * Subscribe Me To Newsletter
+         * @description Subscribe the account's own address; a confirmation email is sent first.
+         */
+        post: operations["subscribe_me_to_newsletter_v1_me_newsletter_post"];
+        /**
+         * Unsubscribe Me From Newsletter
+         * @description Leave the list from Settings. Idempotent: leaving twice changes nothing.
+         */
+        delete: operations["unsubscribe_me_from_newsletter_v1_me_newsletter_delete"];
         options?: never;
         head?: never;
         patch?: never;
@@ -4085,6 +4144,11 @@ export interface components {
             /** Status */
             status: string;
         };
+        /** ConfirmIn */
+        ConfirmIn: {
+            /** Token */
+            token: string;
+        };
         /** ConsentIn */
         ConsentIn: {
             /** Kind */
@@ -5247,10 +5311,27 @@ export interface components {
             /** Paths */
             paths: components["schemas"]["PathOut"][];
         };
+        /**
+         * NewsletterStatusOut
+         * @description One signed-in account's own view of its newsletter choice.
+         */
+        NewsletterStatusOut: {
+            /** Email */
+            email: string;
+            /** Subscribed */
+            subscribed: boolean;
+            /** Pending */
+            pending: boolean;
+        };
         /** NewsletterSubscribeOut */
         NewsletterSubscribeOut: {
             /** Subscribed */
             subscribed: boolean;
+            /**
+             * Pending
+             * @default false
+             */
+            pending: boolean;
             /** Email */
             email: string;
         };
@@ -5273,6 +5354,8 @@ export interface components {
             source: string;
             /** Is Active */
             is_active: boolean;
+            /** Confirmed At */
+            confirmed_at?: string | null;
             /** Created At */
             created_at?: string | null;
             /** Unsubscribed At */
@@ -13328,6 +13411,39 @@ export interface operations {
             };
         };
     };
+    confirm_newsletter_v1_newsletter_confirm_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ConfirmIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NewsletterSubscribeOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     unsubscribe_from_newsletter_v1_newsletter_unsubscribe_post: {
         parameters: {
             query?: never;
@@ -13348,6 +13464,99 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["NewsletterSubscribeOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    my_newsletter_status_v1_me_newsletter_get: {
+        parameters: {
+            query?: never;
+            header?: {
+                authorization?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NewsletterStatusOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    subscribe_me_to_newsletter_v1_me_newsletter_post: {
+        parameters: {
+            query?: never;
+            header?: {
+                authorization?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NewsletterStatusOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    unsubscribe_me_from_newsletter_v1_me_newsletter_delete: {
+        parameters: {
+            query?: never;
+            header?: {
+                authorization?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NewsletterStatusOut"];
                 };
             };
             /** @description Validation Error */

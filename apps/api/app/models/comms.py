@@ -15,6 +15,11 @@ actually did, so a re-run cannot double-send silently.
 from `users` on purpose: most subscribers are not accounts, and an unsubscribed
 address must stay on the list (as inactive) so a later import cannot quietly
 re-subscribe someone who opted out.
+
+The list is double opt-in: a row exists and `is_active` is true as soon as the
+address is submitted, but `confirmed_at` stays null until the reader clicks the
+link in the confirmation email. An address is mailed only when both are true, so
+a typo or someone else's address cannot be added without the owner's click.
 """
 from __future__ import annotations
 
@@ -92,6 +97,12 @@ class NewsletterSubscriber(Base):
     # newsletter email. Possession is the authorisation, so it is never returned
     # by an API response: a list of tokens would let one reader opt out everyone.
     unsubscribe_token: Mapped[str | None] = mapped_column(String(64), unique=True, index=True)
+    # Opaque token for the confirmation link. Kept after confirmation so a
+    # second click on the same link is a no-op rather than an "invalid link".
+    confirm_token: Mapped[str | None] = mapped_column(String(64), unique=True, index=True)
+    # Null while the address is pending; set by the confirmation click. Existing
+    # rows are backfilled from created_at by the double opt-in migration.
+    confirmed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now(), nullable=False
     )

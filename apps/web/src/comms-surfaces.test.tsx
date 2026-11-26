@@ -15,6 +15,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { AnnouncementBanner } from './components/AnnouncementBanner';
 import { NewsletterSignup } from './components/NewsletterSignup';
 import { clearDismissedAnnouncements } from './lib/announcements';
+import { NewsletterConfirm } from './routes/NewsletterConfirm';
 import { NewsletterUnsubscribe } from './routes/NewsletterUnsubscribe';
 
 function jsonResponse(status: number, body: unknown): Response {
@@ -155,7 +156,9 @@ describe('newsletter signup', () => {
   it('posts the address once and confirms without saying whether it was new', async () => {
     const fetchMock = vi
       .fn()
-      .mockResolvedValue(jsonResponse(201, { subscribed: true, email: 'ada@example.test' }));
+      .mockResolvedValue(
+        jsonResponse(201, { subscribed: true, pending: true, email: 'ada@example.test' }),
+      );
     vi.stubGlobal('fetch', fetchMock);
 
     const container = mount(<NewsletterSignup />);
@@ -168,7 +171,9 @@ describe('newsletter signup', () => {
         ?.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
     });
 
-    await waitFor(() => expect(container.textContent).toContain('You are on the list'));
+    // Double opt-in: the form asks for a click, not claims the address is on.
+    await waitFor(() => expect(container.textContent).toContain('Check your inbox'));
+    expect(container.textContent).not.toContain('You are on the list');
 
     const [url, init] = fetchMock.mock.calls[0] as [string, RequestInit];
     expect(url).toBe('/api/v1/newsletter/subscribe');
@@ -218,6 +223,84 @@ describe('newsletter signup', () => {
 
     await waitFor(() => expect(container.textContent).toContain('Enter the email address'));
     expect(fetchMock).not.toHaveBeenCalled();
+  });
+});
+
+describe('newsletter confirm page', () => {
+  const TOKEN = 'c'.repeat(43);
+
+  function renderAt(path: string): HTMLElement {
+    const container = document.createElement('div');
+    document.body.appendChild(container);
+    root = createRoot(container);
+    act(() => {
+      root?.render(
+        <MemoryRouter initialEntries={[path]}>
+          <NewsletterConfirm />
+        </MemoryRouter>,
+      );
+    });
+    return container;
+  }
+
+  it('waits for a click before confirming the address', async () => {
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValue(
+        jsonResponse(200, { subscribed: true, pending: false, email: 'x@example.test' }),
+      );
+    vi.stubGlobal('fetch', fetchMock);
+
+    const container = renderAt(`/newsletter/confirm?token=${TOKEN}`);
+    expect(container.textContent).toContain('Confirm your newsletter subscription?');
+    // Opening the link - or a scanner prefetching it - must not confirm by itself.
+    expect(fetchMock).not.toHaveBeenCalled();
+
+    const confirm = [...container.querySelectorAll('button')].find((button) =>
+      button.textContent?.includes('Confirm subscription'),
+    );
+    await act(async () => {
+      confirm?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    });
+
+    await waitFor(() => expect(container.textContent).toContain('You are on the list'));
+    const [url, init] = fetchMock.mock.calls[0] as [string, RequestInit];
+    expect(url).toBe('/api/v1/newsletter/confirm');
+    expect(JSON.parse(String(init.body))).toEqual({ token: TOKEN });
+  });
+
+  it('explains a link that lost its token', async () => {
+    const fetchMock = vi.fn();
+    vi.stubGlobal('fetch', fetchMock);
+
+    const container = renderAt('/newsletter/confirm');
+    expect(container.textContent).toContain('That link is incomplete');
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
+
+  it('keeps the address pending when the token is refused', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockResolvedValue(
+        jsonResponse(404, {
+          error: {
+            code: 'confirm_link_invalid',
+            message: 'That confirmation link is not valid.',
+          },
+        }),
+      ),
+    );
+
+    const container = renderAt(`/newsletter/confirm?token=${TOKEN}`);
+    const confirm = [...container.querySelectorAll('button')].find((button) =>
+      button.textContent?.includes('Confirm subscription'),
+    );
+    await act(async () => {
+      confirm?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    });
+
+    await waitFor(() => expect(container.textContent).toContain('not valid'));
+    expect(container.textContent).not.toContain('You are on the list');
   });
 });
 

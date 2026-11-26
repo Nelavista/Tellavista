@@ -22,6 +22,7 @@ from app.api.deps import get_current_user
 from app.api.v1.domains.comms.schemas import (
     AnnouncementListOut,
     AnnouncementOut,
+    NewsletterStatusOut,
     NewsletterSubscribeOut,
     NewsletterSubscriberListOut,
     NewsletterSubscriberOut,
@@ -43,6 +44,10 @@ class SubscribeIn(BaseModel):
 
 
 class UnsubscribeIn(BaseModel):
+    token: str = Field(min_length=20, max_length=128)
+
+
+class ConfirmIn(BaseModel):
     token: str = Field(min_length=20, max_length=128)
 
 
@@ -78,8 +83,12 @@ def subscribe_to_newsletter(
     request: Request,
     db: Session = Depends(get_db),
 ) -> NewsletterSubscribeOut:
-    """Anyone can subscribe; the answer never says whether the address was new,
-    so the endpoint cannot be used to test whether someone is on the list.
+    """Start a double opt-in: a confirmation link is mailed and the address is
+    not on the list until it is clicked.
+
+    The answer is the same for a new address, a pending one and one that is
+    already confirmed, so the endpoint cannot be used to test who is subscribed.
+    It says "confirm from your inbox" rather than claiming either state.
 
     Limited by IP inside the handler rather than with the per-user `rate_limit`
     dependency: there is no signed-in user here to key the counter on, which is
@@ -90,7 +99,37 @@ def subscribe_to_newsletter(
     )
     row = comms.subscribe(db, email=payload.email, source=payload.source)
     db.commit()
-    return NewsletterSubscribeOut(subscribed=True, email=row.email)
+    return NewsletterSubscribeOut(subscribed=False, pending=True, email=row.email)
+
+
+@public_router.post("/newsletter/confirm", response_model=NewsletterSubscribeOut)
+def confirm_newsletter(
+    payload: ConfirmIn,
+    request: Request,
+    db: Session = Depends(get_db),
+) -> NewsletterSubscribeOut:
+    """Finish the opt-in from the link in the confirmation email.
+
+    The click is the consent, so a second one is not an error. A token that
+    matches no row is refused rather than silently accepted: the reader needs to
+    know the link did not work, not be told they are on a list they are not on.
+    """
+    ratelimit.check(
+        f"newsletter-confirm:{_client_ip(request)}", limit=20, window_seconds=60
+    )
+    row = comms.confirm_by_token(db, payload.token)
+    if row is None:
+        raise ApiError(
+            404,
+            "confirm_link_invalid",
+            "That confirmation link is not valid. Use the link in the most recent email.",
+        )
+    db.commit()
+    return NewsletterSubscribeOut(
+        subscribed=row.is_active and row.confirmed_at is not None,
+        pending=row.confirmed_at is None,
+        email=row.email,
+    )
 
 
 @public_router.post("/newsletter/unsubscribe", response_model=NewsletterSubscribeOut)
@@ -117,7 +156,44 @@ def unsubscribe_from_newsletter(
             "That unsubscribe link is not valid. Use the link in the most recent email.",
         )
     db.commit()
-    return NewsletterSubscribeOut(subscribed=False, email=row.email)
+    return NewsletterSubscribeOut(subscribed=False, pending=False, email=row.email)
+
+
+@public_router.get("/me/newsletter", response_model=NewsletterStatusOut)
+def my_newsletter_status(
+    user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> NewsletterStatusOut:
+    """The signed-in account's own newsletter choice, for the Settings toggle.
+
+    Keyed by the account email, never by an address in the query string: this
+    read must not become a second way to probe someone else's address.
+    """
+    return _status(db, user.email)
+
+
+@public_router.post("/me/newsletter", status_code=201, response_model=NewsletterStatusOut)
+def subscribe_me_to_newsletter(
+    user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> NewsletterStatusOut:
+    """Subscribe the account's own address; a confirmation email is sent first."""
+    comms.subscribe(db, email=user.email, user_id=user.id, source="settings")
+    db.commit()
+    return _status(db, user.email)
+
+
+@public_router.delete("/me/newsletter", response_model=NewsletterStatusOut)
+def unsubscribe_me_from_newsletter(
+    user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> NewsletterStatusOut:
+    """Leave the list from Settings. Idempotent: leaving twice changes nothing."""
+    row = comms.subscriber_by_email(db, user.email)
+    if row is not None:
+        comms.unsubscribe(db, row)
+        db.commit()
+    return _status(db, user.email)
 
 
 @public_router.get("/announcements", response_model=AnnouncementListOut)
@@ -260,6 +336,17 @@ def unsubscribe_subscriber(
     comms.unsubscribe(db, row)
     db.commit()
     return row
+
+
+def _status(db: Session, email: str) -> NewsletterStatusOut:
+    row = comms.subscriber_by_email(db, email)
+    if row is None:
+        return NewsletterStatusOut(email=email.strip().lower(), subscribed=False, pending=False)
+    return NewsletterStatusOut(
+        email=row.email,
+        subscribed=row.is_active and row.confirmed_at is not None,
+        pending=row.is_active and row.confirmed_at is None,
+    )
 
 
 def _client_ip(request: Request) -> str:

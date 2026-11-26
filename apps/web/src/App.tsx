@@ -97,6 +97,9 @@ const Faq = React.lazy(() => import('./routes/Faq').then((m) => ({ default: m.Fa
 const NewsletterUnsubscribe = React.lazy(() =>
   import('./routes/NewsletterUnsubscribe').then((m) => ({ default: m.NewsletterUnsubscribe })),
 );
+const NewsletterConfirm = React.lazy(() =>
+  import('./routes/NewsletterConfirm').then((m) => ({ default: m.NewsletterConfirm })),
+);
 const Privacy = React.lazy(() => import('./routes/Legal').then((m) => ({ default: m.Privacy })));
 const Terms = React.lazy(() => import('./routes/Legal').then((m) => ({ default: m.Terms })));
 const ContributorTerms = React.lazy(() =>
@@ -259,6 +262,14 @@ function RouteTable(): JSX.Element {
           element={
             <Public>
               <NewsletterUnsubscribe />
+            </Public>
+          }
+        />
+        <Route
+          path="/newsletter/confirm"
+          element={
+            <Public>
+              <NewsletterConfirm />
             </Public>
           }
         />

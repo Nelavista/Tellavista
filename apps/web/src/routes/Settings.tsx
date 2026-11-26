@@ -9,6 +9,7 @@ import type {
   AvailabilityOut,
   ConsentListOut,
   LanguagesOut,
+  NewsletterStatusOut,
   NotificationListOut,
   ProfileOut,
   PlatformConfigOut,
@@ -854,6 +855,8 @@ function NotificationsSection({
         </div>
       </Panel>
 
+      <NewsletterPanel />
+
       <PushDevicesPanel devices={devices} busy={busy} onRemove={onRemoveDevice} />
 
       <Panel
@@ -893,6 +896,108 @@ function NotificationsSection({
         )}
       </Panel>
     </div>
+  );
+}
+
+/**
+ * The newsletter choice, on the page where the email choice lives.
+ *
+ * Subscribing is double opt-in, so the pending state is shown as its own state
+ * rather than as "on": the address is not on the list until the reader opens the
+ * link we mailed. Leaving is immediate and reversible by subscribing again.
+ */
+function NewsletterPanel(): JSX.Element {
+  const [status, setStatus] = React.useState<NewsletterStatusOut | null>(null);
+  const [busy, setBusy] = React.useState(false);
+  const [note, setNote] = React.useState<string | null>(null);
+  const [error, setError] = React.useState<string | null>(null);
+
+  React.useEffect(() => {
+    let live = true;
+    http
+      .get<NewsletterStatusOut>('/me/newsletter')
+      .then((data) => {
+        if (live) setStatus(data);
+      })
+      .catch(() => {
+        if (live) setStatus(null);
+      });
+    return () => {
+      live = false;
+    };
+  }, []);
+
+  async function subscribe(): Promise<void> {
+    setBusy(true);
+    setError(null);
+    setNote(null);
+    try {
+      setStatus(await http.post<NewsletterStatusOut>('/me/newsletter', {}));
+      setNote('Confirmation sent. Open the link in that email to finish.');
+    } catch (err) {
+      setError(err instanceof ApiError ? err.message : 'Could not subscribe this address.');
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function leave(): Promise<void> {
+    setBusy(true);
+    setError(null);
+    setNote(null);
+    try {
+      setStatus(await http.del<NewsletterStatusOut>('/me/newsletter'));
+      setNote('You are off the newsletter list.');
+    } catch (err) {
+      setError(err instanceof ApiError ? err.message : 'Could not leave the list.');
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  const badge = !status ? null : status.subscribed ? (
+    <Badge tone="success">On</Badge>
+  ) : status.pending ? (
+    <Badge tone="warning">Pending</Badge>
+  ) : (
+    <Badge tone="neutral">Off</Badge>
+  );
+
+  return (
+    <Panel title="Monthly newsletter" actions={badge}>
+      <div className="nv-stack">
+        {status === null ? (
+          <Skeleton lines={2} />
+        ) : (
+          <>
+            <p className="nv-muted">
+              {status.subscribed
+                ? `One note a month to ${status.email}: new material, open opportunities and what changed on the platform. Every issue carries its own unsubscribe link.`
+                : status.pending
+                  ? `We emailed a confirmation link to ${status.email}. The address is not on the list until you open it.`
+                  : `Add ${status.email} to the list for one note a month. We send a confirmation link first; nothing is sent until you click it.`}
+            </p>
+            <div className="nv-row">
+              {status.subscribed || status.pending ? (
+                <Button disabled={busy} onClick={() => void leave()} type="button" variant="secondary">
+                  {busy ? 'Leaving' : 'Leave the newsletter'}
+                </Button>
+              ) : (
+                <Button disabled={busy} onClick={() => void subscribe()} type="button">
+                  {busy ? 'Sending' : 'Subscribe'}
+                </Button>
+              )}
+            </div>
+          </>
+        )}
+        {note ? <p role="status">{note}</p> : null}
+        {error ? (
+          <p className="nv-error" role="alert">
+            {error}
+          </p>
+        ) : null}
+      </div>
+    </Panel>
   );
 }
 

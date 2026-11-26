@@ -118,7 +118,7 @@ export function Announcements(): JSX.Element {
       });
       setEmail('');
       subscribers.reload();
-      setNote('Address added to the newsletter list.');
+      setNote('Confirmation email sent. The address is on the list once they click it.');
     } catch (err) {
       setError(err instanceof ApiError ? err.message : 'Could not add that address.');
     } finally {
@@ -363,8 +363,10 @@ export function Announcements(): JSX.Element {
                     <td className="nv-mono">{row.email}</td>
                     <td>{row.source}</td>
                     <td>
-                      {row.is_active ? (
+                      {row.confirmed_at && row.is_active ? (
                         <Badge tone="success">active</Badge>
+                      ) : row.is_active ? (
+                        <Badge tone="warning">pending</Badge>
                       ) : (
                         <Badge tone="neutral">unsubscribed</Badge>
                       )}

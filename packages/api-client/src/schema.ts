@@ -264,3 +264,4 @@ export type AnnouncementListOut = Schemas['AnnouncementListOut'];
 export type NewsletterSubscriberOut = Schemas['NewsletterSubscriberOut'];
 export type NewsletterSubscriberListOut = Schemas['NewsletterSubscriberListOut'];
 export type NewsletterSubscribeOut = Schemas['NewsletterSubscribeOut'];
+export type NewsletterStatusOut = Schemas['NewsletterStatusOut'];

@@ -7,12 +7,25 @@ publish cannot double-mail, and an unsubscribe cannot be silently undone.
 """
 from __future__ import annotations
 
+from datetime import UTC, datetime
+
+import pytest
 from factories import make_ops, make_user, unique
 from sqlalchemy import func, select
 
+from app.core import ratelimit
 from app.core.security import create_access_token
 from app.models.comms import NewsletterSubscriber
 from app.models.jobs import Job
+
+
+@pytest.fixture(autouse=True)
+def _reset_rate_limits():
+    """This module deliberately hits the public opt-in many times; the IP limit is
+    exercised in test_rate_limit_redis.py, not by accumulating across tests."""
+    ratelimit.reset()
+    yield
+    ratelimit.reset()
 
 
 def _headers(user) -> dict:
@@ -25,11 +38,22 @@ def _headers(user) -> dict:
 
 def _subscriber(db, *, active: bool = True) -> NewsletterSubscriber:
     row = NewsletterSubscriber(
-        email=f"{unique('list')}@example.test", source="manual", is_active=active
+        email=f"{unique('list')}@example.test",
+        source="manual",
+        is_active=active,
+        confirmed_at=datetime.now(UTC),
     )
     db.add(row)
     db.commit()
     return row
+
+
+def _confirm(client, db, address: str) -> None:
+    """Finish the double opt-in the way the reader does: from the emailed link."""
+    row = db.scalar(select(NewsletterSubscriber).where(NewsletterSubscriber.email == address))
+    assert row is not None and row.confirm_token
+    response = client.post("/v1/newsletter/confirm", json={"token": row.confirm_token})
+    assert response.status_code == 200, response.text
 
 
 def test_ops_can_compose_and_publish_an_announcement(api) -> None:
@@ -206,18 +230,113 @@ def test_the_public_can_subscribe_once(api) -> None:
         select(NewsletterSubscriber).where(NewsletterSubscriber.email == address)
     ).all()
     assert len(rows) == 1
+    # Double opt-in: submitting starts the row but does not finish it.
     assert rows[0].is_active
+    assert rows[0].confirmed_at is None
+    assert rows[0].confirm_token
+
+    _confirm(client, db, address)
+    db.refresh(rows[0])
+    assert rows[0].confirmed_at is not None
+
+
+def test_subscribing_emails_one_confirmation_link_and_does_not_spam(api) -> None:
+    client, db = api
+    address = f"{unique('confirmmail')}@example.test"
+
+    client.post("/v1/newsletter/subscribe", json={"email": address})
+    client.post("/v1/newsletter/subscribe", json={"email": address})
+
+    jobs = db.scalars(select(Job).where(Job.name == "send_email")).all()
+    assert len(jobs) == 1  # the second submit reused the pending job key
+    body = jobs[0].payload["body"]
+    row = db.scalar(select(NewsletterSubscriber).where(NewsletterSubscriber.email == address))
+    assert f"/newsletter/confirm?token={row.confirm_token}" in body
+    assert address not in body
+
+
+def test_a_pending_address_is_not_mailed_an_issue(api) -> None:
+    client, db = api
+    ops = make_ops(db)
+    address = f"{unique('pending')}@example.test"
+    client.post("/v1/newsletter/subscribe", json={"email": address})
+
+    created = client.post(
+        "/v1/ops/announcements",
+        json={"title": "Too early", "channel": "email"},
+        headers=_headers(ops),
+    ).json()
+    body = client.post(
+        f"/v1/ops/announcements/{created['id']}/publish", headers=_headers(ops)
+    ).json()
+    assert body["email_recipient_count"] == 0
+
+    _confirm(client, db, address)
+    created = client.post(
+        "/v1/ops/announcements",
+        json={"title": "Now welcome", "channel": "email"},
+        headers=_headers(ops),
+    ).json()
+    body = client.post(
+        f"/v1/ops/announcements/{created['id']}/publish", headers=_headers(ops)
+    ).json()
+    assert body["email_recipient_count"] == 1
+
+
+def test_a_confirmation_click_is_idempotent_and_reports_the_state(api) -> None:
+    client, db = api
+    address = f"{unique('clicktwice')}@example.test"
+    client.post("/v1/newsletter/subscribe", json={"email": address})
+    row = db.scalar(select(NewsletterSubscriber).where(NewsletterSubscriber.email == address))
+
+    first = client.post("/v1/newsletter/confirm", json={"token": row.confirm_token})
+    second = client.post("/v1/newsletter/confirm", json={"token": row.confirm_token})
+
+    assert first.json() == {"subscribed": True, "pending": False, "email": address}
+    # A second click is not an error, and does not change the timestamp.
+    assert second.json() == first.json()
+
+
+def test_an_unknown_confirmation_token_is_refused(api) -> None:
+    client, _db = api
+    response = client.post("/v1/newsletter/confirm", json={"token": "x" * 40})
+    assert response.status_code == 404
+    assert response.json()["error"]["code"] == "confirm_link_invalid"
 
 
 def test_the_public_cannot_probe_whether_an_address_is_subscribed(api) -> None:
-    """The answer is the same for a new and an existing address, so the endpoint
-    cannot be used to test who is on the list."""
+    """The answer is the same for a new, a pending and a confirmed address, so the
+    endpoint cannot be used to test who is on the list."""
     client, db = api
     address = f"{unique('probe')}@example.test"
     fresh = client.post("/v1/newsletter/subscribe", json={"email": address})
     again = client.post("/v1/newsletter/subscribe", json={"email": address})
+    _confirm(client, db, address)
+    confirmed = client.post("/v1/newsletter/subscribe", json={"email": address})
 
-    assert fresh.json() == again.json() == {"subscribed": True, "email": address}
+    expected = {"subscribed": False, "pending": True, "email": address}
+    assert fresh.json() == again.json() == confirmed.json() == expected
+
+
+def test_a_signed_in_person_can_subscribe_and_leave_from_settings(api) -> None:
+    client, db = api
+    student = make_user(db)
+
+    initial = client.get("/v1/me/newsletter", headers=_headers(student))
+    assert initial.json() == {"email": student.email, "subscribed": False, "pending": False}
+
+    started = client.post("/v1/me/newsletter", headers=_headers(student))
+    assert started.json() == {"email": student.email, "subscribed": False, "pending": True}
+    _confirm(client, db, student.email)
+
+    active = client.get("/v1/me/newsletter", headers=_headers(student))
+    assert active.json() == {"email": student.email, "subscribed": True, "pending": False}
+
+    left = client.delete("/v1/me/newsletter", headers=_headers(student))
+    assert left.json() == {"email": student.email, "subscribed": False, "pending": False}
+    # Leaving twice is not an error.
+    again = client.delete("/v1/me/newsletter", headers=_headers(student))
+    assert again.json() == left.json()
 
 
 def test_unsubscribing_keeps_the_row_and_can_be_undone(api) -> None:
@@ -240,7 +359,13 @@ def test_unsubscribing_keeps_the_row_and_can_be_undone(api) -> None:
     )
     assert again.status_code == 201
     db.refresh(row)
+    # Re-subscribing starts a new opt-in: the row is active again but pending
+    # confirmation, so an old unsubscribe cannot be silently bypassed.
     assert row.is_active and row.unsubscribed_at is None
+    assert row.confirmed_at is None
+    _confirm(client, db, row.email)
+    db.refresh(row)
+    assert row.confirmed_at is not None
 
 
 def test_the_subscriber_list_reports_real_counts(api) -> None:
@@ -264,6 +389,7 @@ def test_every_email_carries_the_subscribers_own_unsubscribe_link(api) -> None:
     ops = make_ops(db)
     address = f"{unique('optout')}@example.test"
     client.post("/v1/newsletter/subscribe", json={"email": address})
+    _confirm(client, db, address)
     row = db.scalar(select(NewsletterSubscriber).where(NewsletterSubscriber.email == address))
     assert row is not None and row.unsubscribe_token
 
@@ -274,7 +400,9 @@ def test_every_email_carries_the_subscribers_own_unsubscribe_link(api) -> None:
     ).json()
     client.post(f"/v1/ops/announcements/{created['id']}/publish", headers=_headers(ops))
 
-    job = db.scalar(select(Job).where(Job.name == "send_email"))
+    job = db.scalar(
+        select(Job).where(Job.name == "send_email", Job.idempotency_key.like("announcement:%"))
+    )
     body = job.payload["body"]
     assert "Hello there." in body
     assert f"/newsletter/unsubscribe?token={row.unsubscribe_token}" in body
@@ -287,13 +415,14 @@ def test_the_unsubscribe_link_works_and_cannot_be_undone_by_accident(api) -> Non
     ops = make_ops(db)
     address = f"{unique('leave')}@example.test"
     client.post("/v1/newsletter/subscribe", json={"email": address})
+    _confirm(client, db, address)
     row = db.scalar(select(NewsletterSubscriber).where(NewsletterSubscriber.email == address))
 
     first = client.post(
         "/v1/newsletter/unsubscribe", json={"token": row.unsubscribe_token}
     )
     assert first.status_code == 200
-    assert first.json() == {"subscribed": False, "email": address}
+    assert first.json() == {"subscribed": False, "pending": False, "email": address}
     db.refresh(row)
     assert row.is_active is False and row.unsubscribed_at is not None
 

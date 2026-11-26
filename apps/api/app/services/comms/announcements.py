@@ -16,6 +16,10 @@ one with rules worth stating:
 * Every email carries that subscriber's own unsubscribe link, authorised by an
   opaque token rather than the address, so leaving needs no account and cannot
   be done on someone else's behalf.
+* Subscribing is double opt-in. Adding an address mails a confirmation link and
+  leaves the row pending; only the click that link authorises sets `confirmed_at`,
+  and only confirmed rows are ever mailed an issue. A further subscribe while a
+  confirmation is pending re-sends nothing -- the same job key is reused.
 """
 from __future__ import annotations
 
@@ -47,6 +51,11 @@ from app.services import audit
 from app.services.jobs import enqueue
 
 EMAIL_SUBJECT_PREFIX = "Nelavista"
+
+
+def _web_link(path: str) -> str:
+    """An absolute link into the web app. Relative paths cannot be clicked in mail."""
+    return f"{get_settings().WEB_BASE_URL.rstrip('/')}/{path.lstrip('/')}"
 
 
 def _validate_audience(value: str) -> str:
@@ -133,21 +142,24 @@ def newsletter_emails(db: Session) -> list[str]:
         db.scalars(
             select(NewsletterSubscriber.email)
             .where(NewsletterSubscriber.is_active.is_(True))
+            .where(NewsletterSubscriber.confirmed_at.is_not(None))
             .order_by(NewsletterSubscriber.id)
         ).all()
     )
 
 
 def newsletter_rows(db: Session) -> list[NewsletterSubscriber]:
-    """Active subscribers, as rows rather than addresses.
+    """Confirmed, active subscribers, as rows rather than addresses.
 
     The row is needed because every message carries that subscriber's own
-    unsubscribe token; `newsletter_emails` cannot express that.
+    unsubscribe token; `newsletter_emails` cannot express that. Pending rows are
+    excluded here: a confirmation link is not consent to send them an issue.
     """
     return list(
         db.scalars(
             select(NewsletterSubscriber)
             .where(NewsletterSubscriber.is_active.is_(True))
+            .where(NewsletterSubscriber.confirmed_at.is_not(None))
             .order_by(NewsletterSubscriber.id)
         ).all()
     )
@@ -163,10 +175,7 @@ def _email_body(announcement: Announcement, subscriber: NewsletterSubscriber) ->
     """
     if subscriber.unsubscribe_token is None:
         return announcement.body
-    # Read when the message is composed, not at import: the worker and the web
-    # process each load their own environment.
-    base = get_settings().WEB_BASE_URL.rstrip("/")
-    link = f"{base}/newsletter/unsubscribe?token={subscriber.unsubscribe_token}"
+    link = _web_link(f"/newsletter/unsubscribe?token={subscriber.unsubscribe_token}")
     return (
         f"{announcement.body}\n\n---\n"
         "You are receiving this because you asked for the Nelavista newsletter.\n"
@@ -263,8 +272,14 @@ def subscribe(
     user_id: int | None = None,
     source: str = "public",
 ) -> NewsletterSubscriber:
-    """Opt in, idempotently. Re-subscribing an address that was unsubscribed is an
-    explicit opt-in again, so it clears `unsubscribed_at`."""
+    """Start a double opt-in, idempotently.
+
+    The row is created (or reactivated) immediately, but it is not mailable until
+    the reader opens the confirmation link. Re-subscribing an address that was
+    unsubscribed is an explicit opt-in again, so it clears `unsubscribed_at` and
+    starts a new pending confirmation; a second submit while one is pending keeps
+    the same token, and therefore the same job key, so the inbox is not spammed.
+    """
     normalised = email.strip().lower()
     if "@" not in normalised or "." not in normalised.split("@")[-1]:
         raise ApiError(400, "invalid_email", "Enter an email address.")
@@ -280,14 +295,84 @@ def subscribe(
             row.user_id = user_id
     if row.unsubscribe_token is None:
         row.unsubscribe_token = secrets.token_urlsafe(32)
+    if row.confirmed_at is None and row.confirm_token is None:
+        row.confirm_token = secrets.token_urlsafe(32)
     db.flush()
+
+    if row.confirmed_at is None:
+        enqueue(
+            db,
+            "send_email",
+            {
+                "to": row.email,
+                "subject": "Confirm your Nelavista newsletter",
+                "body": _confirmation_body(row),
+            },
+            # One pending confirmation per token: retries and repeated submits
+            # reuse the job instead of mailing the address again.
+            key=f"newsletter-confirm:{row.id}:{row.confirm_token}",
+        )
+        db.flush()
     return row
 
 
+def _confirmation_body(row: NewsletterSubscriber) -> str:
+    link = _web_link(f"/newsletter/confirm?token={row.confirm_token}")
+    return (
+        "One click and the monthly Nelavista newsletter is yours: new material,\n"
+        "open opportunities and what changed on the platform. One note a month.\n\n"
+        f"Confirm: {link}\n\n"
+        "If you did not ask for this, ignore this email. The address will not be\n"
+        "added and will not be contacted again.\n"
+    )
+
+
+def confirm_by_token(db: Session, token: str) -> NewsletterSubscriber | None:
+    """Finish the opt-in from the link in the confirmation email.
+
+    Idempotent while the reader is subscribed: a second click, or a mail client
+    following the link again, finds the same row already confirmed and changes
+    nothing. It does not reactivate an address that has since unsubscribed --
+    that is what the next explicit sign-up is for.
+    """
+    if not token:
+        return None
+    row = db.scalar(
+        select(NewsletterSubscriber).where(NewsletterSubscriber.confirm_token == token)
+    )
+    if row is None:
+        return None
+    if row.confirmed_at is None and row.is_active:
+        row.confirmed_at = datetime.now(UTC)
+        db.flush()
+        audit.record(
+            db,
+            action="comms.newsletter_confirmed",
+            target_type="newsletter_subscriber",
+            target_id=row.id,
+        )
+    return row
+
+
+def subscriber_by_email(db: Session, email: str) -> NewsletterSubscriber | None:
+    normalised = email.strip().lower()
+    return db.scalar(
+        select(NewsletterSubscriber).where(NewsletterSubscriber.email == normalised)
+    )
+
+
 def unsubscribe(db: Session, row: NewsletterSubscriber) -> NewsletterSubscriber:
+    """Leave the list, and revoke the confirmation along with it.
+
+    Clearing `confirmed_at` and `confirm_token` means a later sign-up starts a
+    fresh double opt-in instead of inheriting the old click: leaving is a real
+    withdrawal, not a pause that the next accidental submit can undo.
+    """
     if row.is_active:
         row.is_active = False
         row.unsubscribed_at = datetime.now(UTC)
+        row.confirmed_at = None
+        row.confirm_token = None
         db.flush()
     return row
 
@@ -328,18 +413,27 @@ def subscriber_counts(db: Session) -> dict[str, int]:
         select(func.count())
         .select_from(NewsletterSubscriber)
         .where(NewsletterSubscriber.is_active.is_(True))
+        .where(NewsletterSubscriber.confirmed_at.is_not(None))
+    )
+    pending = db.scalar(
+        select(func.count())
+        .select_from(NewsletterSubscriber)
+        .where(NewsletterSubscriber.is_active.is_(True))
+        .where(NewsletterSubscriber.confirmed_at.is_(None))
     )
     total = db.scalar(select(func.count()).select_from(NewsletterSubscriber))
-    return {"active": int(active or 0), "total": int(total or 0)}
+    return {"active": int(active or 0), "pending": int(pending or 0), "total": int(total or 0)}
 
 
 __all__ = [
     "archive_announcement",
+    "confirm_by_token",
     "create_announcement",
     "newsletter_emails",
     "newsletter_rows",
     "publish_announcement",
     "subscribe",
+    "subscriber_by_email",
     "subscriber_by_token",
     "subscriber_counts",
     "unsubscribe",

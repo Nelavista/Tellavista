@@ -75,6 +75,11 @@ const PAGES: Record<string, PageMeta> = {
     description: 'Stop the Nelavista monthly newsletter. Your account and learning record are unaffected.',
     noindex: true,
   },
+  '/newsletter/confirm': {
+    title: 'Confirm subscription',
+    description: 'Confirm the address that asked for the Nelavista monthly newsletter.',
+    noindex: true,
+  },
   '/offline': {
     title: 'Offline',
     description: 'Nelavista is offline. Reconnect to continue where you stopped.',

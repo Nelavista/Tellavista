@@ -59,6 +59,8 @@ api_v1_router.include_router(platform_routes.router)
 # Internal tools: imports, support lookup, audit trail, the overview aggregate.
 api_v1_router.include_router(ops_routes.router)
 
-# Communications: /announcements (in-product read), /newsletter/subscribe and the
-# /ops announcements + newsletter administration behind comms.read/write.
+# Communications: /announcements (in-product read), the public double opt-in
+# (/newsletter/subscribe, /newsletter/confirm, /newsletter/unsubscribe), the
+# signed-in /me/newsletter choice and the /ops announcements + newsletter
+# administration behind comms.read/write.
 api_v1_router.include_router(comms_routes.public_router)

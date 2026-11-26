@@ -117,6 +117,7 @@ export type {
   MfaEnableOut,
   MfaSetupOut,
   MfaStatusOut,
+  NewsletterStatusOut,
   NewsletterSubscribeOut,
   NewsletterSubscriberListOut,
   NewsletterSubscriberOut,

@@ -461,9 +461,10 @@ the code; the suites in Verification were re-run.
 - [!] **K5 — Mobile lockstep drift.** Mobile has no caller for matches,
   eligibility, adaptive CBT, CBT history, course/topic detail, applications,
   cohort invitations, password change, consent history, the re-consent gate or
-  date of birth. Signup/reset/onboarding/path link out to the web without the
-  ADR-0012 exception note. Decide port vs. written exception; port the re-consent
-  gate before store submission. Risk R16.
+  date of birth. Signup/reset/onboarding/path link out to the web. **Decided
+  2026-11-26:** web launches first; the gaps are a written exception in the
+  ADR-0012 amendment and no longer block the web launch or cutover. They block
+  mobile store submission only — the re-consent gate must ship first. Risk R16.
 - [ ] **K6** Wire `REDIS_URL` into the rate limiter before running more than one
   API instance.
 - [ ] **K7** Add `prefers-contrast`/`forced-colors` styles and automated axe

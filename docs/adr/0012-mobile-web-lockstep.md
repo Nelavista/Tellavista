@@ -1,6 +1,6 @@
 # ADR-0012 — Mobile ships in lockstep with web
 
-**Status:** Accepted · **Date:** 2026-10-17
+**Status:** Accepted · **Date:** 2026-10-17 · **Amended:** 2026-11-26 (launch exception, below)
 **Affects:** `apps/web`, `apps/mobile`, the journey roadmap (M1–M7)
 
 ## Context
@@ -27,3 +27,24 @@ The core journey screens ship **in lockstep**:
 ## Reversibility
 
 **Medium.** Reverting to web-first is a process change, not a code change, but it leaves a period where the surfaces differ. Treat the lockstep rule as the default and the exception as the one to justify.
+
+## Amendment — 2026-11-26: web launches first
+
+**Decision.** For the V2 launch, the web ships first and mobile follows. The mobile gaps below no longer block the web launch or the domain cutover. They do block mobile store submission, as stated per item. The lockstep rule above still applies to every new screen built after launch.
+
+**Why.** The audit on 2026-11-26 found that mobile had fallen behind web (risk R16, `REMAINING_WORK.md` K5). Holding the web launch until mobile catches up would keep V1 live longer for every student, including the ones who only use the web.
+
+**Screens that are web-only at launch:**
+
+| Screen / call | Mobile today | Before store submission |
+|---|---|---|
+| Re-consent gate (`POST /auth/consent`) | missing | **Required.** A mobile-only student must be asked to accept a new policy version. |
+| Signup, password reset | opens the web | Allowed at launch; port or keep with a store-review note |
+| Onboarding, Choose Path | opens the web | Allowed at launch; port next |
+| Matches, eligibility | missing | Port after launch |
+| CBT history, adaptive practice | missing | Port after launch |
+| Course and topic detail | missing | Port after launch |
+| Applications list, cohort invitations | missing | Port after launch |
+| Password change, consent history, date of birth | missing | Port after launch |
+
+**Closing the exception.** Each row is removed from this table when its mobile screen ships. A CI check that lists API paths with a web caller but no mobile caller (allow-list = this table) stops new drift. The exception ends when the table is empty.

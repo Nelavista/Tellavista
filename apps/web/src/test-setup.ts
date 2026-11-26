@@ -34,4 +34,14 @@ if (!('IntersectionObserver' in globalThis)) {
 
 window.scrollTo = (() => undefined) as typeof window.scrollTo;
 
+/**
+ * Accessibility matchers for every test file. Route tests call the helper in
+ * `test-a11y.ts`; extending here means the matcher is available even in a test
+ * that asserts on axe output directly.
+ */
+import { expect } from 'vitest';
+import * as matchers from 'vitest-axe/matchers';
+
+expect.extend(matchers);
+
 export {};

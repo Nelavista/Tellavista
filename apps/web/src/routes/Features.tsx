@@ -107,7 +107,7 @@ export function Features(): JSX.Element {
                 <article className="nv-feature" key={feature.title}>
                   <span className="nv-feature__number">{String(index + 1).padStart(2, '0')}</span>
                   <Icon aria-hidden="true" size={20} strokeWidth={1.6} />
-                  <h3>{feature.title}</h3>
+                  <h2>{feature.title}</h2>
                   <p>{feature.body}</p>
                 </article>
               );

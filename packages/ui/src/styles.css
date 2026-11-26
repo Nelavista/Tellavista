@@ -2166,3 +2166,173 @@ pre {
     display: block;
   }
 }
+
+/*
+ * High contrast
+ *
+ * `!important` is deliberate: the active theme is written to the root as inline
+ * style by theme.ts, and inline declarations beat a media-query rule otherwise.
+ * Text and borders move to the strongest values the palette allows, and the
+ * translucent sticky bars become opaque so content behind them cannot show
+ * through.
+ */
+@media (prefers-contrast: more) {
+  :root,
+  :root[data-theme='dark'] {
+    --nv-text: #ffffff !important;
+    --nv-text-muted: #e3ebf7 !important;
+    --nv-text-subtle: #c9d7e8 !important;
+    --nv-border: #7b93b0 !important;
+    --nv-border-strong: #b8cae0 !important;
+    --nv-accent: #b4c4ff !important;
+    --nv-accent-strong: #d6dfff !important;
+    --nv-accent-subtle: #1b2d5c !important;
+    --nv-accent-contrast: #000000 !important;
+    --nv-success: #6ff5e2 !important;
+    --nv-warning: #ffd97a !important;
+    --nv-danger: #ffaaaa !important;
+    --nv-info: #b5e2ff !important;
+    --nv-focus-ring: #ffffff !important;
+  }
+
+  :root[data-theme='light'] {
+    --nv-text: #000000 !important;
+    --nv-text-muted: #1d2c41 !important;
+    --nv-text-subtle: #33475f !important;
+    --nv-border: #5b6d84 !important;
+    --nv-border-strong: #2f4055 !important;
+    --nv-accent: #0b2270 !important;
+    --nv-accent-strong: #071848 !important;
+    --nv-accent-subtle: #dbe3ff !important;
+    --nv-accent-contrast: #ffffff !important;
+    --nv-success: #0a5c43 !important;
+    --nv-warning: #6b4500 !important;
+    --nv-danger: #8a1a12 !important;
+    --nv-info: #14456f !important;
+    --nv-focus-ring: #000000 !important;
+  }
+
+  .nv-topbar,
+  .nv-public__header,
+  .nv-mobile-bar,
+  .nv-mobile-nav {
+    background: var(--nv-bg) !important;
+    backdrop-filter: none;
+  }
+
+  .nv-card,
+  .nv-panel,
+  .nv-input,
+  .nv-select,
+  .nv-textarea,
+  .nv-button,
+  .nv-icon-button,
+  .nv-dialog {
+    border-width: 2px;
+  }
+
+  .nv-skeleton {
+    animation: none;
+    background: var(--nv-border-strong);
+  }
+}
+
+/*
+ * Forced colours (Windows high contrast)
+ *
+ * The browser replaces our palette with the user's system colours. These rules
+ * keep the affordances that depended on our own colour: visible borders on
+ * buttons and inputs, a Highlight focus ring, status text that is not a
+ * background-only signal, and a meter whose fill survives the palette swap.
+ */
+@media (forced-colors: active) {
+  :focus-visible {
+    outline: 2px solid Highlight;
+  }
+
+  a,
+  a:hover {
+    color: LinkText;
+    text-decoration: underline;
+  }
+
+  .nv-button,
+  .nv-button--secondary,
+  .nv-button--ghost,
+  .nv-button--danger,
+  .nv-icon-button,
+  .nv-action,
+  .nv-input,
+  .nv-select,
+  .nv-textarea,
+  .nv-dialog,
+  .nv-segmented,
+  .nv-field__reveal {
+    border-color: ButtonBorder;
+  }
+
+  .nv-button,
+  .nv-button:hover,
+  .nv-button--danger,
+  .nv-button--danger:hover,
+  .nv-icon-button,
+  .nv-icon-button:hover {
+    color: ButtonText;
+  }
+
+  .nv-card,
+  .nv-panel,
+  .nv-badge,
+  .nv-tag,
+  .nv-stamp,
+  .nv-banner,
+  .nv-alert,
+  .nv-empty,
+  .nv-error-state,
+  .nv-step,
+  .nv-practice-choice {
+    border-color: CanvasText;
+  }
+
+  .nv-badge,
+  .nv-tag,
+  .nv-stamp {
+    background: Canvas;
+    color: CanvasText;
+  }
+
+  .nv-meter {
+    border: 1px solid CanvasText;
+  }
+
+  .nv-meter__fill {
+    background: Highlight;
+  }
+
+  .nv-skeleton {
+    animation: none;
+    background: GrayText;
+  }
+
+  .nv-panel--inverted,
+  .nv-panel--inverted .nv-h2,
+  .nv-panel--inverted .nv-h3,
+  .nv-panel--inverted .nv-meta,
+  .nv-panel--inverted .nv-muted,
+  .nv-panel--inverted strong {
+    background: Canvas;
+    color: CanvasText;
+  }
+
+  .nv-hero__image {
+    filter: none;
+  }
+
+  .nv-topbar,
+  .nv-public__header,
+  .nv-mobile-bar,
+  .nv-mobile-nav {
+    background: Canvas;
+    backdrop-filter: none;
+  }
+}

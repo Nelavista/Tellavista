@@ -11,6 +11,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { App } from './App';
 import { setAccessToken } from './lib/http';
+import { expectNoA11yViolations } from './test-a11y';
 
 function jsonResponse(status: number, body: unknown): Response {
   return new Response(JSON.stringify(body), {
@@ -116,6 +117,7 @@ describe('public routes', () => {
       'https://nelavista.com/features',
     );
     expect(document.head.querySelector('meta[name="robots"]')?.getAttribute('content')).toBe('index, follow');
+    await expectNoA11yViolations(container);
   });
 
   it('renders the FAQ page', async () => {
@@ -123,6 +125,7 @@ describe('public routes', () => {
     await waitFor(() => {
       expect(container.textContent).toContain('Who is Nelavista for?');
     });
+    await expectNoA11yViolations(container);
   });
 
   it('renders the impact page with the live figures the API returns', async () => {
@@ -137,6 +140,7 @@ describe('public routes', () => {
     // a count the database actually returned.
     expect(container.textContent).toContain('Verified skills');
     expect(container.textContent).not.toContain('publishes no reach figures');
+    await expectNoA11yViolations(container);
   });
 
   it('renders the offline page', async () => {
@@ -144,6 +148,7 @@ describe('public routes', () => {
     await waitFor(() => {
       expect(container.textContent).toContain('The shell is here. The data is not.');
     });
+    await expectNoA11yViolations(container);
   });
 
   it('renders a real 404 for an unknown public path and marks it noindex', async () => {
@@ -155,5 +160,6 @@ describe('public routes', () => {
     expect(document.head.querySelector('meta[name="robots"]')?.getAttribute('content')).toBe(
       'noindex, nofollow',
     );
+    await expectNoA11yViolations(container);
   });
 });

@@ -467,5 +467,6 @@ the code; the suites in Verification were re-run.
   mobile store submission only — the re-consent gate must ship first. Risk R16.
 - [x] **K6** `REDIS_URL` wired into the rate limiter: Redis-backed fixed windows
   with an in-process fallback when Redis is unreachable.
-- [ ] **K7** Add `prefers-contrast`/`forced-colors` styles and automated axe
-  checks (`AUDIT.md` §7).
+- [x] **K7** `prefers-contrast: more` and `forced-colors: active` rules added to
+  the shared styles; `vitest-axe` runs on the root and public-route tests
+  (`AUDIT.md` §7).

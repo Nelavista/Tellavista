@@ -14,6 +14,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { App } from './App';
 import { setAccessToken } from './lib/http';
+import { expectNoA11yViolations } from './test-a11y';
 
 // Only the route decision is under test; Home reads a dashboard of its own.
 vi.mock('./routes/Home', () => ({ Home: () => <div>home screen</div> }));
@@ -95,6 +96,7 @@ describe('root route', () => {
     await waitFor(() => {
       expect(container.textContent).toContain('Create your account');
     });
+    await expectNoA11yViolations(container);
   });
 
   it('continues a signed-in visitor to /home instead of the landing page', async () => {
@@ -129,5 +131,6 @@ describe('root route', () => {
       expect(container.textContent).toContain('home screen');
     });
     expect(container.textContent).not.toContain('Create your account');
+    await expectNoA11yViolations(container);
   });
 });

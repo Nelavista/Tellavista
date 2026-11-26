@@ -273,10 +273,15 @@ building the product decision behind it, or leave it documented as unused.
 - Public metadata, sitemap, robots, manifest, icons and offline shell are present.
 - API responses are not cached by the PWA.
 - A manual keyboard, focus, reduced-motion and contrast pass remains required.
-- `prefers-reduced-motion` is honoured in the shared styles and MotionConfig;
-  `prefers-contrast` and `forced-colors` are **not** implemented, although the
-  design plan called for a contrast media query.
-- No automated axe or visual-regression coverage is currently wired.
+- `prefers-reduced-motion` is honoured in the shared styles and MotionConfig.
+  `prefers-contrast: more` and `forced-colors: active` rules live in
+  `packages/ui/src/styles.css`: stronger text/border values (with `!important`
+  because the theme bridge writes inline variables), opaque sticky bars, and
+  system-colour borders, links and focus rings.
+- `vitest-axe` runs on the root route and public-route tests. jsdom cannot
+  compute colour contrast, so those two pixel-level rules are disabled there;
+  the media queries plus the manual high-contrast pass cover colour.
+  Visual-regression coverage is still absent.
 - The public-route test helper's lazy-route wait budget was raised from 1.5 s to
   5 s on 2026-11-26. Under parallel load the old budget turned a slow dynamic
   import into a false page failure (first Features, then Impact in a focused

@@ -437,7 +437,7 @@ read as an outage. Full context is in `docs/v2-ui/AUDIT.md` §6.1.
 | `GET /talent/students/{user_id}` | Admin uses `GET /talent/directory`; nothing reads one student's talent profile by id | Leave unused until a support-detail drawer needs it |
 | `GET /opportunities/{slug}/gaps` | Opportunity detail embeds the verdict, reasons and blocks, so nothing calls the standalone read | Leave unused; the embedded contract is authoritative |
 | `GET /onboarding/sessions/{session_id}/semesters` | Onboarding reads `/onboarding/sessions/current` only | Leave unused until a semester picker exists |
-| `REDIS_URL` | Declared in `app/core/config.py` but read nowhere; rate limits use the in-process store (F5) | Wire before running more than one API instance, or limits are per process |
+| `REDIS_URL` | Read by `app/core/ratelimit.py`; when set, rate-limit counters live in Redis and are shared across workers and restarts | Set it on Render; with it unset the limiter falls back to the in-process store |
 | `FLAG_EXTERNAL_OPPORTUNITIES` | Only widens the opportunities router guard; no external-listing feature sits behind it | Keep off at launch; it is a placeholder, not a hidden feature |
 
 Do not invent UI for these to make a checklist look complete. Close an edge by
@@ -465,7 +465,7 @@ the code; the suites in Verification were re-run.
   2026-11-26:** web launches first; the gaps are a written exception in the
   ADR-0012 amendment and no longer block the web launch or cutover. They block
   mobile store submission only — the re-consent gate must ship first. Risk R16.
-- [ ] **K6** Wire `REDIS_URL` into the rate limiter before running more than one
-  API instance.
+- [x] **K6** `REDIS_URL` wired into the rate limiter: Redis-backed fixed windows
+  with an in-process fallback when Redis is unreachable.
 - [ ] **K7** Add `prefers-contrast`/`forced-colors` styles and automated axe
   checks (`AUDIT.md` §7).

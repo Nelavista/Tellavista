@@ -256,7 +256,7 @@ refers to.
 | `GET /talent/students/{user_id}` | Admin uses `GET /talent/directory`; no screen reads one student's talent profile by id. | Leave unused until a support-detail drawer needs it. |
 | `GET /opportunities/{slug}/gaps` | The opportunity detail embeds the verdict, reasons and blocks in its own response, so no screen calls the standalone gaps read. | Leave unused; keep the embedded contract authoritative. |
 | `GET /onboarding/sessions/{session_id}/semesters` | Onboarding reads only the current session. | Leave unused until a semester picker exists. |
-| `REDIS_URL` | Declared in API config, read nowhere. Rate limits use an in-process store. | Wire before running more than one API instance; otherwise each process keeps its own limits. |
+| `REDIS_URL` | Read by `app/core/ratelimit.py`. Rate-limit counters are shared in Redis when set, in-process otherwise. | Set `REDIS_URL` on Render so limits survive restarts and span workers. |
 | `FLAG_EXTERNAL_OPPORTUNITIES` | Only widens the opportunities router guard; no external-listing feature exists behind it. | Keep off; it is a placeholder, not a hidden feature. |
 | Browser push registration | Settings registers, lists and removes browser devices through `push-sw.js`; delivery is signed with VAPID and needs both keys configured. | Delivered; set the VAPID pair per environment before claiming browser push. |
 | Native push | `PUSH_ENDPOINT` is required for Expo/FCM delivery; unset leaves in-app rows only. | Delivered; provider credentials are deployment work, not UI work. |

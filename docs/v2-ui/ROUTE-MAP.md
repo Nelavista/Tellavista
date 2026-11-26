@@ -2,9 +2,9 @@
 
 | Field | Value |
 |---|---|
-| Status | **Implemented 2026-11-01; V1 delta audited 2026-11-04; comms and bulk routes added 2026-11-19. See §1.1 for post-build state and §1.2 for routes V1 added after the map.** |
+| Status | **Implemented 2026-11-01; V1 delta audited 2026-11-04; comms and bulk routes added 2026-11-19; web push and live Impact added 2026-11-21/23; re-audited 2026-11-26. See §1.1 for post-build state and §1.2 for routes V1 added after the map.** |
 | Gate | Gate 1 — route map |
-| Date | 2026-10-27; post-build status 2026-11-01; V1 delta 2026-11-04; comms and bulk routes 2026-11-19 |
+| Date | 2026-10-27; post-build status 2026-11-01; V1 delta 2026-11-04; comms and bulk routes 2026-11-19; audit refresh 2026-11-26 |
 | Scope | Public, auth, student app, admin and utility routes for the V2 web launch |
 | Companion documents | `docs/v2-ui/AUDIT.md`, `docs/v2-ui/PARITY.md`, `docs/v2-ui/DESIGN-DIRECTION.md`, `docs/v2-ui/IMAGE-PROMPTS.md` |
 
@@ -13,7 +13,7 @@
 > route map is the contract between the design and the API; if a screen has no
 > API, it is marked as a dependency, not invented.
 
-## 1.1 Post-build status (2026-11-01, updated 2026-11-19)
+## 1.1 Post-build status (2026-11-01, updated 2026-11-26)
 
 Every route below has a real API or real static content. The former dependency
 states are closed:
@@ -21,14 +21,18 @@ states are closed:
 - **Built:** all public/auth routes, the student shell and routes, the split
   settings routes, notifications, applications, CBT history, course and topic
   detail, campus, transcript, talent share, admin shell, Overview, Waitlist,
-  Campus, Audit, Imports, Users, Opportunities, Projects, Review, Money, Content,
-  Public site, Announcements, Platform, Security, public 404, admin 404, error
-  boundary and offline.
+  Campus, Audit, Imports, Users, Talent directory, Opportunities, Projects,
+  Review, Money, Content, Public site, Announcements, Platform, Security, public
+  404, admin 404, error boundary and offline.
 - **Comms and bulk routes (2026-11-19):** `/newsletter/unsubscribe` plus the
   footer opt-in, the in-app announcement banner, `#/announcements` (which also
   holds the newsletter subscriber list), `GET /ops/overview`, and bulk actions on
   `#/review`, `#/money` and `#/content`. There is no standalone `/newsletter`
   marketing route and no `#/newsletter` hash route.
+- **Web push and live Impact (2026-11-21/23):** `/settings/notifications`
+  registers, lists and removes browser push devices; `/impact` reads
+  `GET /platform/impact` and `#/site` previews and publishes or hides the
+  figures. The migration head for these changes is `20261123_1200`.
 - **Closed API gaps:** course/topic detail (`GET /academia/courses/{id}`,
   `GET /academia/topics/{id}`), CBT attempt history with reviewed answers
   (`GET /academia/cbt/history`), the student cohort-invite list
@@ -120,7 +124,7 @@ stored, so a track is an ordered suggestion rather than a learning path.
 | `/settings` | Settings — profile and work | Edit identity, bio, location, timezone, visibility, languages, availability | **Save changes** | Guarded. |
 | `/settings/security` | Settings — security | Change password, view 2FA, sessions/devices | **Change password** | Uses `POST /auth/password/change`; the response replaces the current access token and revokes other sessions. |
 | `/settings/notifications` | Settings - notifications | Email preference, browser push on/off, registered device list/removal, notification list link | **Save notification settings** | Uses `/me/push-devices`, `GET /platform/config` for the push key and the `push-sw.js` service worker. The switch only appears when this build has a worker and a VAPID key. |
-| `/settings/data` | Settings - data and consent | Export, consent history, delete account | **Download my data / Delete account** | New. Uses `/me/export`, `/me/consents`, `DELETE /auth/account`; `POST /auth/consent` is a re-consent dependency, not wired. |
+| `/settings/data` | Settings - data and consent | Export, consent history, delete account | **Download my data / Delete account** | New. Uses `/me/export`, `/me/consents`, `DELETE /auth/account`; `POST /auth/consent` is called by `ConsentGate` when a policy version changes. |
 
 Why split Settings: the current one-page Settings mixes profile, work preferences,
 notifications, data and deletion. Splitting gives each task one anchor, keeps deep
@@ -243,9 +247,10 @@ Keep the hash router. Group the rail by **Operate** and **Configure**.
 | `#/imports` | Import runs | Bring V1 data across safely | **Dry-run / apply** | `GET/POST /ops/imports`, `GET /ops/imports/{id}` | Loading, empty, error, report |
 | `#/users` | Users | Find and act on an account | **Search result / selected user** | `GET /ops/users?q`, `/ops/users/{id}` | Skeleton, empty, error |
 | `#/waitlist` | Waitlist | See demand for uncovered universities | **Waitlist entry** | `GET /ops/waitlist` | Skeleton, empty, error |
+| `#/talent` | Talent directory | Find talent by language, level and visibility | **Filtered result** | `GET /talent/directory?language=&language_level=&academic_level=&visibility=&background=` | Skeleton, empty, error, refused for a student account |
 | `#/opportunities` | Opportunities | Create and run opportunities | **Opportunity / applications** | `GET /opportunities/admin/all`, `/{slug}/candidates`, `/{slug}/applications`, `POST /opportunities`, `PATCH /{slug}`, `POST /applications/{id}/status` | Skeleton, empty, error |
 | `#/work` | Projects & cohorts | Run managed projects | **Project / cohort** | `GET /work/projects`, `/{slug}`, `/cohorts/{id}`, `/replacements`; create/assign/invite/remove | Skeleton, empty, error |
-| `#/review` | Review queue | Clear the quality queue | **Oldest pending review** | `GET /work/review-queue`, `/verification/practical/submissions`; reviews, quality standard, override; `POST /work/review-queue/bulk`, `POST /verification/practical/submissions/bulk-review` | Skeleton, empty, error, per-id bulk failures |
+| `#/review` | Review queue | Clear the quality queue | **Oldest pending review** | `GET /work/review-queue`, `/verification/practical/submissions`; reviews, quality standard, override; `POST /work/review-queue/bulk` (the `POST /verification/practical/submissions/bulk-review` endpoint exists but this screen does not call it yet) | Skeleton, empty, error, per-id bulk failures |
 | `#/money` | Money | Resolve payout and ledger exceptions | **Exception / outstanding total** | Financials, ledger, payout batches, reconciliation; `POST /money/payout-items/{id}/fail`; `POST /money/payout-batches/bulk` (approve/cancel; **pay stays single**) | Skeleton, empty, error, per-id bulk failures |
 | `#/content` | Content | Author and publish skills content | **Draft / published item** | `GET /skills`, `/skills/content/*`; create/update; `/lessons/bulk`, `/paths/bulk`, `/tasks/bulk` | Skeleton, empty, error, validation, per-id bulk failures |
 | `#/site` | Public site | Decide what the public page publishes | **Publish / hide impact figures** | `GET /platform/impact/admin`, `GET/PATCH /platform/settings` (`impact_metrics_enabled`) | Skeleton, error, saved, hidden preview |
@@ -353,10 +358,13 @@ Mobile:
 
 ### Admin shell
 
-- 220px left rail:
-  - **Operate:** Overview, Audit, Imports, Users, Waitlist, Opportunities, Work,
-    Review, Money
-  - **Configure:** Content, Public site, Campus, Announcements, Platform, Security
+- 220px left rail (implemented groups):
+  - **Overview:** Operations
+  - **Trust:** Audit trail, Users, Waitlist, Talent directory
+  - **Delivery:** Opportunities, Projects & cohorts, Review queue, Money
+  - **Content:** Content, Public site, Announcements, Campus, Platform settings,
+    Security
+  - **Data:** Import runs
 - 56px top bar: environment badge, command search, user menu.
 - Dense tables; detail drawer; audit footer.
 
@@ -389,11 +397,12 @@ Mobile:
 | `/onboarding` path step | `POST /me/path` with `academia`, `skills`, `opportunities` or `campus` |
 | `/onboarding` campus step | `PUT /onboarding/university`, then `POST /me/onboarding/complete` |
 | Admin `#/waitlist` | `GET /ops/waitlist` |
+| Admin `#/talent` | `GET /talent/directory` with language, language level, academic level, visibility-status and background filters |
 | Admin `#/campus` | `GET /ops/campus`, `POST /ops/campus` |
 | Admin application status | `POST /opportunities/applications/{id}/status` (refuses a skipped step and returns `allowed_next`) |
 | Admin payout-item failure | `POST /money/payout-items/{id}/fail` |
 | Admin `#/overview` | `GET /ops/overview` |
-| Admin bulk actions | `POST /work/review-queue/bulk`, `POST /verification/practical/submissions/bulk-review`, `POST /money/payout-batches/bulk`, `POST /skills/content/{lessons,paths,tasks}/bulk` |
+| Admin bulk actions | Called: `POST /work/review-queue/bulk`, `POST /money/payout-batches/bulk`, `POST /skills/content/lessons/bulk`. API-only, no admin bar yet: `POST /verification/practical/submissions/bulk-review`, `POST /skills/content/{paths,tasks}/bulk` |
 | Admin `#/announcements` | `GET/POST /ops/announcements`, `/publish`, `/archive`; `GET/POST/DELETE /ops/newsletter/subscribers` |
 | Public `/impact` | `GET /platform/impact` (public aggregates; empty when ops has withdrawn them) |
 | Admin `#/site` | `GET /platform/impact/admin`, `GET/PATCH /platform/settings` (`impact_metrics_enabled`) |
@@ -427,14 +436,13 @@ list lives on `#/announcements`.
 | Public | 15 | After tokens/primitives |
 | Auth/account | 5 | After public shell |
 | Student app | 28 | After auth |
-| Admin | 14 | After student app or in parallel once primitives exist |
+| Admin | 16 | After student app or in parallel once primitives exist |
 | Utility | 4 states + redirects | With the shells |
 
-Total: **~62 routes**, of which 19 are new or split from existing screens. This is
-a full product surface, not a landing-page refresh. The count does **not** include
-the remaining 2026-11-04 V1 language delta (`/skills/african-languages`,
-`/skills/languages` and the language delete action); add those only if the product
-decision in `PARITY.md` §1.2 approves them.
+Total: **~64 routes**, of which 21 are new or split from existing screens. This is
+a full product surface, not a landing-page refresh. The 2026-11-04 V1 language
+delta (`/skills/african-languages`, `/skills/languages` and the language delete
+action) is built and included in the student count.
 
 Build order after Gate 2 approval:
 

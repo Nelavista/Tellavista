@@ -18,7 +18,8 @@ Likelihood × impact. Owners are roles, not names. Every row links to its mitiga
 | R12 | **`test`/`test123` account in prod** (historical pytest bug) | M | M | Verify and remove; never run debug boot against prod; conftest fix retained. | backend |
 | R13 | **Hardcoded domains / debug endpoints in prod** | M | L | V2 derives everything from config; gate `/api/debug-*`; V1 unchanged. | backend |
 | R14 | **Scope creep vs 1–3 month window** | M | M | Follow build-first strictly; feature flags for anything unfinished (Phase 3). | founder |
-| R15 | **V2 ships smaller than live V1** (after 2026-11-01, V1 `main` gained the African Languages Lab, language profile, structured scored tasks, `/impact` and the FUTA taxonomy; V2 has none) | M | H | Take the port/drop decision in `docs/v2-ui/PARITY.md` 1.2 before merging `develop` to `main`; do not claim full V1 parity. Port schema and seed before routes. | founder + backend |
+| R15 | **V2 ships smaller than live V1** (after 2026-11-01, V1 `main` gained the African Languages Lab, language profile, structured scored tasks, `/impact` and the FUTA taxonomy) | L | M | **Mitigated 2026-11-08:** the delta is ported (I1-I8) and tested. Only career-track progress remains a product decision, not a missing capability; do not claim full V1 parity until it is recorded. | founder + backend |
+| R16 | **Mobile drifts behind web** (found 2026-11-26: matches, eligibility, adaptive CBT, CBT history, course/topic detail, applications, invitations, password change, consent history and the re-consent gate are web-only; signup/onboarding link out without the ADR-0012 exception note) | H | M | Port the re-consent gate before store submission; port the rest or record each as a written ADR-0012 exception. Add a CI check that lists API paths with a web caller but no mobile caller. | mobile + founder |
 
 ## Standing rules
 - Never force-push; never rewrite history without explicit approval.

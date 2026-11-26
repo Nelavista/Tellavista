@@ -41,12 +41,13 @@ of truth at that point.
 
 Do not create a release tag or change V1.
 
-**Do not merge while the V1 delta is undecided.** V1 `main` received the African
+**The V1 delta is ported (2026-11-08).** V1 `main` received the African
 Languages Lab, language profile, structured scored tasks, `/impact` and the FUTA
-taxonomy after the V2 parity review. V2 has none of them. Before this merge,
-either port them (`docs/v2-ui/PARITY.md` 1.2, `docs/build/REMAINING_WORK.md` I1-I8)
-or record that V2 launches without them. Merging `develop` blindly would ship a V2
-that is smaller than the live V1 without that being a written product decision.
+taxonomy after the V2 parity review. V2 now has all of it (`docs/v2-ui/PARITY.md`
+1.2, `docs/build/REMAINING_WORK.md` I1-I8); the only open item is career-track
+progress, which needs a product decision because no per-student track progress is
+stored. Record that decision before merge. The merge is no longer blocked by
+missing V1 features.
 
 ---
 
@@ -113,10 +114,28 @@ FLAG_TALENT_PROFILE=1
 FLAG_EXTERNAL_OPPORTUNITIES=0
 ```
 
+Web Push is optional but needs both keys or neither:
+
+```dotenv
+VAPID_PUBLIC_KEY=<public key>
+VAPID_PRIVATE_KEY=<private key>
+VAPID_SUBJECT=mailto:support@nelavista.com
+```
+
 Optional, leave empty if you do not have them: `OPENROUTER_API_KEY`,
 `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `POSTHOG_API_KEY`.
 
 On the two static sites, set `NODE_VERSION=20` if Render does not read `.nvmrc` automatically.
+
+Set these build-time variables on the static sites (they are compiled into the
+bundle, so a change needs a redeploy):
+
+| Variable | Web | Admin | Purpose |
+|---|---|---|---|
+| `VITE_POSTHOG_KEY` | yes | yes | PostHog page views and `$exception` reports; unset is a complete no-op |
+| `VITE_POSTHOG_HOST` | optional | optional | Defaults to `https://us.i.posthog.com` |
+| `VITE_PUBLIC_SITE_URL` | no | yes | Public site link on the admin **Public site** screen; defaults to `https://nelavista.com` |
+| `VITE_API_VERSION` | optional | optional | Defaults to `v1`; keep it aligned with `packages/config/versions.json` |
 
 **API health check path:** `/v1/health`.
 
@@ -172,7 +191,7 @@ apps\api\.venv\Scripts\python.exe -m alembic -c apps/api/alembic.ini upgrade hea
 apps\api\.venv\Scripts\python.exe -m alembic -c apps/api/alembic.ini heads
 ```
 
-`heads` must print exactly one head: `20261108_1300 (head)`. If it prints more than
+`heads` must print exactly one head: `20261123_1200 (head)`. If it prints more than
 one, stop and tell me.
 
 Do **not** run `tools.seed_local` against this database. It creates fake students.
@@ -298,6 +317,8 @@ Use a private browser window. Do not use the apex yet.
 - [ ] Verification → Assessment → Attempt review → Transcript.
 - [ ] Opportunities → Work → Assignment → submit once.
 - [ ] Earnings, Talent profile, Settings.
+- [ ] Settings → Notifications shows the browser push switch only when the VAPID
+  pair is set; subscribe and confirm one push arrives, then remove the device.
 - [ ] Install the PWA; a deep link reloads correctly.
 
 **Admin app**

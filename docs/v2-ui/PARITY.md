@@ -2,8 +2,8 @@
 
 | Field | Value |
 |---|---|
-| Status | **Implemented 2026-11-01; V1 delta audited 2026-11-04; V1 delta ported 2026-11-08; admin operations and comms closed 2026-11-19; live impact metrics and instrumentation 2026-11-23.** The original parity scope is wired and the V1 additions (ALL content, language profile, structured scored tasks and gate, hub and catalogue filters, evidence rows, talent directory filters, Impact, FUTA, prompt hardening, mobile lockstep) are in place. |
-| Date | 2026-10-27; post-build, palette correction and API closure 2026-11-01; V1 delta 2026-11-04; V1 delta port 2026-11-08; admin bulk actions, aggregate overview, application lifecycle, announcements and newsletter 2026-11-19; live Impact metrics, admin Public site and PostHog instrumentation 2026-11-23 |
+| Status | **Implemented 2026-11-01; V1 delta audited 2026-11-04; V1 delta ported 2026-11-08; admin operations and comms closed 2026-11-19; live impact metrics and instrumentation 2026-11-23; re-audited 2026-11-26.** The original parity scope is wired and the V1 additions (ALL content, language profile, structured scored tasks and gate, hub and catalogue filters, evidence rows, talent directory filters, Impact, FUTA, prompt hardening, mobile lockstep) are in place. |
+| Date | 2026-10-27; post-build, palette correction and API closure 2026-11-01; V1 delta 2026-11-04; V1 delta port 2026-11-08; admin bulk actions, aggregate overview, application lifecycle, announcements and newsletter 2026-11-19; live Impact metrics, admin Public site and PostHog instrumentation 2026-11-23; audit refresh 2026-11-26 |
 | Method | V2 code and API contracts are the source of truth. V1 is read-only reference. |
 | Legend | **Stronger** = V2 does more or does it better. **Parity** = capability exists in both. **Gap** = V2 needs work to match. **Dropped** = V2 intentionally removes it; a reason is required. **New** = not in V1. **Decide** = product decision needed. |
 | Companion documents | `docs/v2-ui/AUDIT.md`, `docs/v2-ui/ROUTE-MAP.md`, `docs/v2-ui/DESIGN-DIRECTION.md`, `docs/v2-ui/IMAGE-PROMPTS.md` |
@@ -261,6 +261,7 @@ owed items listed below stay open.
 |---|---|---|---|
 | Dashboard with counts and newest users | Overview is the default and reads one aggregate endpoint, so each count and its timestamp come from the same query | **Parity/stronger** | Keep counts and stamps on the same read |
 | Users + activity | Users | **Parity/stronger** | Keep; add activity detail if needed |
+| No talent directory | **Talent directory** reads `GET /talent/directory` with language, language level, academic level, visibility-status and background filters | **Stronger** | Keep read-only; employer self-service stays dropped |
 | Materials moderation, approve/reject/reindex | No material moderation; imports only | **Gap/decide** | V2 materials are curated; add ops ingestion/moderation if needed |
 | Videos moderation | None | **Dropped** | V2 has no video product |
 | AI flags | None | **Dropped/decide** | Decide whether Ask needs a flag/review loop |
@@ -362,10 +363,12 @@ replacement is real and the product does not pretend the old feature exists.
   blockers on opportunity detail, honest push-device list/removal, consent
   history, CBT review, course and topic detail, in-place password change, split
   settings, 404/offline, light/dark brand theme.
+- Browser push: Settings registers, lists and removes browser devices through
+  `push-sw.js`; delivery is signed with VAPID and needs both keys configured.
 - Admin: Overview (one aggregate read), Waitlist, Campus, Audit, Imports, Users,
-  Opportunities, Projects, Review, Money, Content, Public site, Announcements,
-  Platform, Security, admin 404, application status action, payout-item failure
-  action and bulk actions on review, money and content.
+  Talent directory, Opportunities, Projects, Review, Money, Content, Public site,
+  Announcements, Platform, Security, admin 404, application status action,
+  payout-item failure action and bulk actions on review, money and content.
 - Public data: `/impact` reads live aggregates and the admin Public site screen
   previews and publishes or hides them.
 - Instrumentation: PostHog page views and `$exception` reports in web and admin,
@@ -389,10 +392,18 @@ replacement is real and the product does not pretend the old feature exists.
 - Material upload/analysis (deferred with replacement copy).
 - Google SSO (deferred).
 - Offline submission sync (deferred).
+- Mobile lockstep for the post-2026-11-01 web screens (found 2026-11-26): matches,
+  eligibility, adaptive CBT, CBT history, course/topic detail, applications,
+  cohort invitations, password change, consent history, the re-consent gate and
+  date of birth have no mobile caller. Signup, reset and onboarding link out to
+  the web without the written exception ADR-0012 asks for. See `AUDIT.md` §4.
 - Double opt-in confirmation for new newsletter subscribers.
 - Real business content, team/campus photography and the approved image set.
-- Setting the PostHog keys and confirming one event and one test exception in the
-  dashboard (no key is set in the current local environment).
+- Setting the PostHog keys (`VITE_POSTHOG_KEY`/`VITE_POSTHOG_HOST` for web and
+  admin, `POSTHOG_API_KEY` for the API) and confirming one event and one test
+  exception in the dashboard (no key is set in the current local environment).
+- Setting `VAPID_PUBLIC_KEY`/`VAPID_PRIVATE_KEY` and confirming one browser push
+  subscription and delivery; unset means Settings offers no switch.
 
 ### New, not parity (built 2026-11-19)
 

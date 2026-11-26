@@ -1,5 +1,12 @@
 # UI audit and redesign plan
 
+> **Status: historical, implemented.** This audit was written before the redesign
+> and the redesign landed in commit `5c7ddc9` (landing recomposition, dashboard
+> workspace, mobile shell, inverted panel, rail variant, tabular numerals). Read
+> it as the rationale for the current UI, not as a list of open findings. The one
+> item still open is the contrast media query (`prefers-contrast`/`forced-colors`),
+> recorded in `docs/v2-ui/AUDIT.md` §7.
+
 Reviewed against [`UI-REFERENCE.md`](./UI-REFERENCE.md). Scope: the public site (`apps/web`), the signed-in student shell and dashboard, and the shared component layer (`packages/ui`, `packages/design-tokens`). Admin and mobile inherit the same token and component decisions; they are called out where their structure differs.
 
 ## What is already strong

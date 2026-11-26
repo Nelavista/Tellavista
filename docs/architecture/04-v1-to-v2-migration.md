@@ -27,30 +27,31 @@ V1 is live and must never break. V2 is a **new app** that takes the domain at la
 - Deploys to `v1.nelavista.com` come **only** from `release/v1`.
 - **V1 is not made read-only** (students may still log in to see history), but **new students are directed to V2** and no new V1 features are planned after the swap. Note: V1 `main` did receive new features before this plan was executed; see the next section.
 
-## V1 additions after this plan (2026-11-04)
+## V1 additions after this plan (ported 2026-11-08)
 
 V1 `main` received new work after the migration plan was written. V1 and V2 have
 separate databases and migration heads, so these commits do not conflict with V2
-migrations. They do change what "bring V1's content across" means.
+migrations. They changed what "bring V1's content across" meant. The delta was
+ported on 2026-11-08; this table is kept as the migration record.
 
-| V1 addition | V1 schema / content | V2 impact |
+| V1 addition | V1 schema / content | V2 state |
 |---|---|---|
-| African Languages Lab (ALL) | Migration `d7a3c5e81f42` adds `skill_categories.program`, `skills.language`/`tags_json`, `challenges.task_spec_json`/`is_assessment`/`pass_score`, `challenge_submissions.score`/`result_json`, `user.language_background` and `student_languages`. Content is seeded by `scripts/seed/seed_all_skills.py` from `seed_data/all_skills/`. | V2 has no equivalent columns or content. Do not run the V1 seeder against V2 tables; port the curriculum through a V2 seed after adding the V2 fields. |
-| Language profile | Self-reported languages and capabilities; verification is derived from verified language-specific skills. | V2 identity/skills need an equivalent; it must keep self-reported and verified separate. |
-| Structured task scoring | Deterministic transcription/translation/labeling/recording scoring and an assessment gate. | V2 assessment grading is deterministic for gold tasks, but its task templates do not model these four kinds or WER/chrF. Map them into the V2 model rather than importing V1 submissions. |
-| Impact page | Public static `/impact`, landing band, footer link. | No database change. Add to the V2 public surface only after its metrics are verified; otherwise keep it out. |
-| FUTA official taxonomy | Schools/departments and 35 Surveying & GeoInformatics courses with `Course.semester` and `Course.source = 'futa_official'`; a cleanup script for unlisted departments. | V2's `Course` model has no `semester`, `course_type`, `description` or `source`, and `services/imports/v1.py` does not carry them. Add the fields and importer support before importing this taxonomy, or seed it natively. |
-| AI grading hardening | `wrap_untrusted()` escapes student-supplied `<student_content>` delimiters. | Apply the same boundary to V2 Ask/practice AI prompts; V2 assessment grading is deterministic. |
-| Test speed | Test-only SQLite pragmas. | Not a schema or production change; V2 has its own fixtures. |
+| African Languages Lab (ALL) | Migration `d7a3c5e81f42` adds `skill_categories.program`, `skills.language`/`tags_json`, `challenges.task_spec_json`/`is_assessment`/`pass_score`, `challenge_submissions.score`/`result_json`, `user.language_background` and `student_languages`. Content is seeded by `scripts/seed/seed_all_skills.py` from `seed_data/all_skills/`. | **Ported:** V2 seeds the 9 categories, 94 skills, lessons, practice tasks, assessments and 10 tracks. Do not run the V1 seeder against V2 tables. |
+| Language profile | Self-reported languages and capabilities; verification is derived from verified language-specific skills. | **Ported:** `user_languages` keeps self-reported and verified separate; `/skills/languages` edits the profile. |
+| Structured task scoring | Deterministic transcription/translation/labeling/recording scoring and an assessment gate. | **Ported:** `services/skills/language_tasks.py` scores each task kind and the structured assessment gate is server-side. |
+| Impact page | Public static `/impact`, landing band, footer link. | **Ported with live data:** `/platform/impact`, admin publish control and a landing band from the same aggregates. |
+| FUTA official taxonomy | Schools/departments and 35 Surveying & GeoInformatics courses with `Course.semester` and `Course.source = 'futa_official'`; a cleanup script for unlisted departments. | **Ported:** V2 seeds the verified rows, adds `semester`, `course_type`, `description` and `source`, and preserves them through V1 export/import. |
+| AI grading hardening | `wrap_untrusted()` escapes student-supplied `<student_content>` delimiters. | **Ported:** Ask wraps material and question in explicit untrusted boundaries; practice and assessment grading stay deterministic. |
+| Test speed | Test-only SQLite pragmas. | **No action:** V2 has its own fixtures; do not copy test pragmas into production configuration. |
 
-**Sequencing rule:** if V2 ports ALL, do it as an expand/contract migration:
-add nullable columns/tables and the seed first, backfill, then enforce constraints
-in a later release. Keep the V1 export read-only. Do not make a V1 table change and
-a V2 schema change in the same PR.
+**Sequencing rule (kept for future deltas):** if V2 ports another V1 delta, do it
+as an expand/contract migration: add nullable columns/tables and the seed first,
+backfill, then enforce constraints in a later release. Keep the V1 export
+read-only. Do not make a V1 table change and a V2 schema change in the same PR.
 
 **Migration head note:** V1's head moved from `f1b2c3d4e5f6` to
-`d7a3c5e81f42`. That is a V1-only fact; V2 still enforces its own single Alembic
-head (`20261022_1000` at the time of writing).
+`d7a3c5e81f42`. That is a V1-only fact. V2 enforces its own single Alembic head;
+the current head is `20261123_1200`.
 
 ## Risks & rollbacks
 

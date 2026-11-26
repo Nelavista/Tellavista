@@ -2,7 +2,7 @@
 
 | Field | Value |
 |---|---|
-| Status | **Current as of 2026-11-23.** The original V2 UI build is implemented and the post-build admin, comms and public-surface gaps are closed (first-login 2FA coverage, bulk actions, aggregate ops overview, application lifecycle, announcements and newsletter, live impact metrics with an admin publish control, and PostHog analytics plus error tracking). The last four student-surface gaps are closed too: matches, eligibility, adaptive CBT practice and browser push all have web routes and tests. Launch remains blocked by business decisions, the manual checks in §9 and the single open V1 item in §6. |
+| Status | **Re-audited 2026-11-26.** The original V2 UI build is implemented and the post-build admin, comms and public-surface gaps are closed (first-login 2FA coverage, bulk actions, aggregate ops overview, application lifecycle, announcements and newsletter, live impact metrics with an admin publish control, and PostHog analytics plus error tracking). The last four student-surface gaps are closed too: matches, eligibility, adaptive CBT practice and browser push all have web routes and tests. The 2026-11-26 pass re-ran web/admin typechecks and suites, the API suite and the web build, and corrected stale status in the companion docs. Launch remains blocked by business decisions, the manual checks in §9 and the single open V1 item in §6. |
 | Scope | V2 web, admin, design system and UI-facing API contracts |
 | Source of truth | Current code in `apps/`, `packages/` and the V2 API contracts |
 | Companion documents | `docs/v2-ui/PARITY.md`, `docs/v2-ui/ROUTE-MAP.md`, `docs/v2-ui/DESIGN-DIRECTION.md`, `docs/v2-ui/IMAGE-PROMPTS.md`, `docs/build/REMAINING_WORK.md` |
@@ -28,9 +28,15 @@ The current launch position is:
   Public routes have page metadata, sitemap coverage and private-route robots
   rules. `/impact` publishes live aggregates from the product database; founder
   biography and portrait are no longer on the public site.
-- **Admin surface:** overview, waitlist, campus, audit, imports, users,
-  opportunities, projects, review, money, content, public site, platform,
-  security and 404 are present behind staff authentication and 2FA.
+- **Admin surface:** overview, waitlist, campus, audit, imports, users, talent
+  directory, opportunities, projects, review, money, content, public site,
+  announcements, platform, security and 404 are present behind staff
+  authentication and 2FA.
+- **Mobile lockstep (found 2026-11-26):** the mobile app has not kept up with the
+  web additions since 2026-11-01. It has no matches list, eligibility view,
+  adaptive CBT practice, CBT history, course/topic detail, applications list,
+  cohort invitations, password change, consent history, re-consent gate or
+  date-of-birth field. ADR-0012 requires the core journey in lockstep; see §4.
 - **Design system:** shared tokens, theme bridge, primitives, CSS and self-hosted
   fonts are consumed by both web and admin. Light and dark themes use Nelavista
   blue and white.
@@ -79,7 +85,7 @@ surface is:
 |---|---|
 | Public and auth | Landing, Features, How it works, Pricing, About, Contact, FAQ, privacy, terms, contributor terms, login, signup, email verification, password reset, shared profile, 404 and offline |
 | Student app | Home, onboarding, academia, materials, Ask, CBT, skills, learning, lessons, practice, verification, assessment, attempt review, practical task, transcript, opportunities, applications, work, earnings, talent, campus, notifications and split settings routes |
-| Admin | Overview, waitlist, campus, audit, imports, users, opportunities, projects, review, money, content, public site (impact preview and publish control), announcements (with newsletter subscribers), platform, security and 404 |
+| Admin | Overview, waitlist, campus, audit, imports, users, talent directory, opportunities, projects, review, money, content, public site (impact preview and publish control), announcements (with newsletter subscribers), platform, security and 404 |
 | Platform behaviour | Auth guards, return paths, session refresh, consent re-consent, error boundary, offline shell, route focus handling and theme switching |
 
 ## 3. Public surface
@@ -161,6 +167,18 @@ business content and the manual launch checks remain.
   transcript evidence; the replacement copy still needs product approval.
 - Career-track progress is not stored: a track is a suggested order, not a
   learning path with its own progress.
+- **Mobile is behind web.** A 2026-11-26 search of `apps/mobile/src` found no
+  caller for `/opportunities/matches`, `/platform/me/eligibility`,
+  `/academia/cbt/practice-next`, `/academia/cbt/history`,
+  `/academia/courses/{id}`, `/academia/topics/{id}`, the applications list,
+  cohort invitations, `/auth/password/change`, `/me/consents` or
+  `/auth/consent`, and no date-of-birth field. The re-consent gap matters most: a
+  mobile-only student is never asked to accept a new policy version. Signup,
+  password reset, onboarding (university/faculty/department/courses) and Choose
+  Path are handed to the web on purpose (`screens/Auth.tsx` links out), but
+  ADR-0012 lists onboarding and path as lockstep screens and requires a written
+  exception, which does not exist yet. Either port these or record in ADR-0012
+  which of them mobile intentionally leaves to the web.
 
 ## 5. Admin surface
 
@@ -170,11 +188,17 @@ business content and the manual launch checks remain.
 - Live overview queues, waitlist, campus publication/readback and audit trail.
 - Imports, users, opportunities, projects, review, money, content, platform and
   security screens.
+- A **Talent directory** screen over `GET /v1/talent/directory` with language,
+  language level, academic level, visibility-status and background filters. The
+  screen is read-only and permission-gated; employer self-service remains out of
+  launch scope.
 - Application status actions and payout-item failure actions.
 - Shared page header, panels, skeletons, error states and empty states.
 - Admin unknown routes render a real 404.
-- Bulk actions on review, money (approve/cancel; pay stays single-record on
-  purpose) and content, each answering a per-id applied/unchanged/failed report.
+- Bulk actions on the work review queue, money (approve/cancel; pay stays
+  single-record on purpose) and content lessons, each answering a per-id
+  applied/unchanged/failed report. Practical-submission, path and task bulk
+  endpoints exist but have no admin bar yet (§6.1).
 - One aggregate overview read with queue counts, their timestamps, live projects
   and recent audit rows.
 - An enforced application lifecycle with allowed next states, a decision stamp
@@ -217,6 +241,31 @@ Only career-track progress is open. The implementation record is
 `docs/build/REMAINING_WORK.md` §H and §I, and the mapping is
 `docs/v2-ui/PARITY.md` §1.2.
 
+### 6.1 Unused or partially wired edges
+
+These are current V2 edges that exist in code but have no web or admin caller.
+They are recorded so a future change does not treat an endpoint as delivered UI,
+or a deferred read as an outage. This is the section `REMAINING_WORK.md` §J
+refers to.
+
+| Edge | Current state | Decision |
+|---|---|---|
+| `POST /auth/google` | No Google sign-in button in web, admin or mobile. The endpoint exists behind `GOOGLE_CLIENT_ID`/`GOOGLE_CLIENT_SECRET`. | Deferred until the consent and UI flow are designed; normal auth is complete. |
+| `POST /work/submissions/sync` | No web offline submission queue. Mobile uses its SQLite queue and the same idempotent write path. | Deferred; the API exists for a future web client. |
+| `GET /talent/me/transcript` | Duplicate of the transcript read used by `/verification/transcript`. | Leave unused; do not build a second transcript screen. |
+| `GET /talent/students/{user_id}` | Admin uses `GET /talent/directory`; no screen reads one student's talent profile by id. | Leave unused until a support-detail drawer needs it. |
+| `GET /opportunities/{slug}/gaps` | The opportunity detail embeds the verdict, reasons and blocks in its own response, so no screen calls the standalone gaps read. | Leave unused; keep the embedded contract authoritative. |
+| `POST /skills/content/paths/bulk`, `POST /skills/content/tasks/bulk` | Built and tested; admin Content's bulk bar only covers lessons. | Add path/task selection, or leave API-only. |
+| `POST /verification/practical/submissions/bulk-review` | Built and tested; admin Review's bulk bar only covers the work review queue. | Add a practical-submission bulk bar, or leave API-only. |
+| `GET /onboarding/sessions/{session_id}/semesters` | Onboarding reads only the current session. | Leave unused until a semester picker exists. |
+| `REDIS_URL` | Declared in API config, read nowhere. Rate limits use an in-process store. | Wire before running more than one API instance; otherwise each process keeps its own limits. |
+| `FLAG_EXTERNAL_OPPORTUNITIES` | Only widens the opportunities router guard; no external-listing feature exists behind it. | Keep off; it is a placeholder, not a hidden feature. |
+| Browser push registration | Settings registers, lists and removes browser devices through `push-sw.js`; delivery is signed with VAPID and needs both keys configured. | Delivered; set the VAPID pair per environment before claiming browser push. |
+| Native push | `PUSH_ENDPOINT` is required for Expo/FCM delivery; unset leaves in-app rows only. | Delivered; provider credentials are deployment work, not UI work. |
+
+Do not invent UI for these to make a checklist look complete. Close an edge by
+building the product decision behind it, or leave it documented as unused.
+
 ## 7. Design, accessibility and performance
 
 - Shared design tokens and primitives are used by both V2 web surfaces.
@@ -226,7 +275,14 @@ Only career-track progress is open. The implementation record is
 - Public metadata, sitemap, robots, manifest, icons and offline shell are present.
 - API responses are not cached by the PWA.
 - A manual keyboard, focus, reduced-motion and contrast pass remains required.
+- `prefers-reduced-motion` is honoured in the shared styles and MotionConfig;
+  `prefers-contrast` and `forced-colors` are **not** implemented, although the
+  design plan called for a contrast media query.
 - No automated axe or visual-regression coverage is currently wired.
+- The public-route test helper's lazy-route wait budget was raised from 1.5 s to
+  5 s on 2026-11-26. Under parallel load the old budget turned a slow dynamic
+  import into a false page failure (first Features, then Impact in a focused
+  rerun); the pages themselves render correctly.
 - Analytics and error tracking are wired through PostHog, not Sentry. The web and
   admin apps initialise lazily only when `VITE_POSTHOG_KEY` is present; the API
   reports unhandled errors when `POSTHOG_API_KEY` is present. An unset key is a
@@ -267,10 +323,16 @@ Before launch, the following current blockers must be closed:
 4. Decide whether career-track progress is a product requirement; every other
    V1 capability in §6 is ported.
 5. Complete deployment configuration and the V2 domain switch, including
-   `VITE_POSTHOG_KEY` (web and admin) and `POSTHOG_API_KEY` (API), then confirm
-   one page view and one test exception arrive in PostHog.
+   `VITE_POSTHOG_KEY` and `VITE_POSTHOG_HOST` (web and admin),
+   `VITE_PUBLIC_SITE_URL` (admin), `POSTHOG_API_KEY` (API) and
+   `VAPID_PUBLIC_KEY`/`VAPID_PRIVATE_KEY` (API, for browser push). Then confirm
+   one page view, one test exception and one browser push subscription arrive.
+   The launch checklist's migration head is `20261123_1200`; an older head in a
+   runbook is stale.
 6. Run the current web, admin and API checks, including the first-load budget.
 7. Complete the manual accessibility and responsive browser pass.
+8. Decide the mobile lockstep scope in §4 (port or record as web-only),
+   at minimum the re-consent gate, before the store submission.
 
 ## 10. Documentation status
 
@@ -281,11 +343,22 @@ Keep these documents aligned with this current audit:
 - `docs/v2-ui/DESIGN-DIRECTION.md` — approved visual system.
 - `docs/v2-ui/IMAGE-PROMPTS.md` — asset manifest and photography status.
 - `docs/build/REMAINING_WORK.md` — implementation tracker.
+- `docs/architecture/06-roadmap.md` — delivery status by milestone.
+- `docs/architecture/04-v1-to-v2-migration.md` — V1 delta and migration head.
 - `docs/runbooks/v2-launch-checklist.md` — deployment and cutover checks.
+- `docs/design/AUDIT-AND-PLAN.md` — historical pre-redesign audit; the redesign
+  in it is implemented, so read it as context, not as open work.
 
 Historical V1 audits and completed build plans are not V2 readiness evidence.
 
 ## 11. Verification for this update
+
+**2026-11-26 re-audit:** `pnpm typecheck` 8/8 successful; web `vitest run` 82
+passed (15 files); admin `vitest run` 4 passed; API `pytest -q -x` 442 passed, 1
+skipped; web build succeeded and the first-load budget is 125.8 KB gzip JS of 150
+and 10.3 KB gzip CSS of 20. A caller scan of all 166 generated-client paths found
+the mobile drift (§4) and the unused edges added to §6.1. Not run: mobile tests,
+lint, the Postgres migration job and the manual passes.
 
 The 2026-11-23 change (live impact metrics, admin Public site, founder copy
 removal, PostHog instrumentation) was checked with:

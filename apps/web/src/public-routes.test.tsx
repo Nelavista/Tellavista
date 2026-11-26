@@ -42,7 +42,11 @@ function render(path: string): Mounted {
   return entry;
 }
 
-async function waitFor(assertion: () => void, timeoutMs = 1500): Promise<void> {
+// Public routes are lazy-loaded. On a cold Vitest run (especially on a slow or
+// network-backed checkout) resolving the route module can take more than a
+// second, so give the first paint a realistic budget instead of turning a slow
+// module load into a false product failure.
+async function waitFor(assertion: () => void, timeoutMs = 5000): Promise<void> {
   const deadline = Date.now() + timeoutMs;
   for (;;) {
     try {

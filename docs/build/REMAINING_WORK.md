@@ -5,18 +5,14 @@
 > screen gaps and the launch blockers, use `docs/v2-ui/AUDIT.md` and
 > `docs/v2-ui/ROUTE-MAP.md`.
 
-Last updated: 2026-11-08 (V1 delta I1-I8 ported; Phases 0-10 delivered as code. B13/B14 now have typed
-contracts and web + mobile screens, F7 curriculum is seeded, G1-G5 are policy plus
-admin controls, the B6 answer drafts and B7 re-verification prompt are closed, and
-the API suite was run green - see Verification below. UI readiness is tracked
-separately in `docs/v2-ui/AUDIT.md`. **New on 2026-11-04:** V1 `main` added a
-  post-build feature delta - the African Languages Lab, the language profile,
-  structured scored tasks and the Impact page. FUTA taxonomy, Course provenance
-  fields and importer support were added on 2026-11-08; AI prompt-boundary
-  hardening was added on 2026-11-08; the remaining delta is
-  tracked as §I below and in `docs/v2-ui/PARITY.md` §1.2). The
-  talent-directory filter API was added on 2026-11-08; no employer UI is planned
-  while self-service employer discovery remains dropped by design.
+Last updated: 2026-11-26 (audit refresh; the V1 delta I1-I8 is ported and the
+web public-route test wait budget was raised after a reproducible slow-import
+failure. Earlier: 2026-11-08 V1 delta ported; Phases 0-10 delivered as code;
+B13/B14 typed contracts and web + mobile screens; F7 curriculum seeded; G1-G5
+policy plus admin controls; the B6 answer drafts and B7 re-verification prompt
+closed; the API suite run green - see Verification below. UI readiness is tracked
+separately in `docs/v2-ui/AUDIT.md`. The 2026-11-23 impact/PostHog change is
+recorded in `AUDIT.md` §11; the 2026-11-26 re-audit is §K below.)
 
 This is the build list still to do for V2, in the order it was worked through. It
 exists so progress is visible and nothing gets forgotten. UI readiness and the
@@ -27,10 +23,24 @@ production data, small changes behind feature flags, tests with the code.
 Status legend: `[ ]` to do · `[~]` in progress · `[x]` done · `[!]` blocked on you
 or on an external decision.
 
-## Verification (last full code run 2026-11-08)
+## Verification (last full code run 2026-11-26)
 
 Run after the last code change, not before it. Every line below is a command that
 was executed and its real result.
+
+**2026-11-26 run** (after the public-route wait-budget change):
+
+| Check | Command | Result |
+|---|---|---|
+| Typechecks | `pnpm typecheck` (turbo, 8 tasks) | **8/8 successful** |
+| Web DOM/unit | `vitest run` in `apps/web` | **82 passed** (15 files) |
+| Admin DOM | `vitest run` in `apps/admin` | **4 passed** (2 files) |
+| API suite | `pytest -q -x` in `apps/api` | **442 passed, 1 skipped** (7 min 03 s); only Alembic `path_separator` deprecation warnings |
+| Web build + budget | `vite build`, `node tools/check_web_budget.mjs` | **125.8 KB gzip JS of 150, 10.3 KB gzip CSS of 20** |
+| Not run | mobile `vitest`, lint, Postgres migration job, manual 2FA/a11y passes | still owed |
+
+**2026-11-08 run** (kept for history; the budget figure below predates the
+redesign and PostHog wiring):
 
 | Check | Command | Result |
 |---|---|---|
@@ -107,6 +117,10 @@ Five gaps found in a review of the delivered build, and where each one landed.
   refused, duplicate ids are collapsed, and one bad id never aborts the batch.
   `app/api/v1/bulk.py` is the shared helper; admin Review, Money and Content have
   selection bars that show the per-id failures. Tests: `tests/test_bulk_actions.py`.
+  **Re-checked 2026-11-26:** the admin bars call only `work/review-queue/bulk`,
+  `money/payout-batches/bulk` and `skills/content/lessons/bulk`. The
+  `content/paths/bulk`, `content/tasks/bulk` and
+  `verification/practical/submissions/bulk-review` endpoints are API-only; see §J.
 - [x] **H6 — Aggregate overview endpoint.** The ops overview screen made six list
   requests and derived its own numbers, so the counts and the audit trail could
   disagree. `GET /v1/ops/overview` returns every queue with its count and timestamp
@@ -332,21 +346,21 @@ publishes the parts a signed-out visitor needs. Admin UI: **Platform** in
 - [x] **H3** `packages/api-client/src/generated/schema.d.ts` is committed and the
   freshness gate passes locally.
 
-## I. V1 delta after the V2 build (2026-11-04)
+## I. V1 delta after the V2 build (2026-11-04, ported 2026-11-08)
 
-V1 `main` moved while V2 was being closed out. These items are **new V1 scope**,
-not regressions in the V2 code that already exists, but V2 is no longer a
-superset of V1. They are also recorded in `docs/v2-ui/PARITY.md` §1.2 and
-`docs/v2-ui/AUDIT.md` §1.1.
+V1 `main` moved while V2 was being closed out. These items were **new V1 scope**,
+not regressions in the V2 code that already existed. They are ported; the
+mapping is in `docs/v2-ui/PARITY.md` §1.2 and `docs/v2-ui/AUDIT.md` §6. Only
+career-track progress is still open, and it is a product decision.
 
-- [~] **I1 — ALL curriculum decision and port.** V1 added 9 African Languages Lab
+- [x] **I1 — ALL curriculum decision and port.** V1 added 9 African Languages Lab
   categories, 94 skills (including `african-language-data-beginner`), 10
   multi-skill tracks, lessons, practice tasks, assessments and projects.
   V2 seeds the 9 categories, 94 skills, lessons, practice tasks, assessments and
   10 ordered tracks through `app.seed.all_language`, and the `/skills/african-languages`
   hub plus `/skills/career-tracks` read them. V1's project templates remain
   future content work, not a screen gap.
-- [~] **I2 — V2 schema for language data.** V2 now has the ALL programme,
+- [x] **I2 — V2 schema for language data.** V2 now has the ALL programme,
   skill language/tags and career-track tables, `user_languages.dialect` plus the
   five self-reported capability flags, and persisted `practice_attempts.score` /
   `result` (migration `20261108_1200`). Verified capabilities are still derived
@@ -398,11 +412,12 @@ superset of V1. They are also recorded in `docs/v2-ui/PARITY.md` §1.2 and
 (`synchronous=OFF`, `journal_mode=MEMORY`) belong in V1's `tests/conftest.py`, not
 in V2 application or production configuration.
 
-**Definition of done for §I:** either the delta is ported and tested on web,
-admin, mobile and API, or `PARITY.md` records an explicit product decision to drop
-it. Do not merge `develop` to `main` for launch while this section is undecided.
+**Definition of done for §I:** met. The delta is ported and tested on web,
+admin, mobile and API. Career-track progress (no per-student progress is stored;
+a track is an ordered suggestion) needs a recorded product decision in
+`PARITY.md` before anyone claims full V1 parity. It does not block the merge.
 
-## J. Known unused or partially wired V2 edges (2026-11-04)
+## J. Known unused or partially wired V2 edges (2026-11-04, re-checked 2026-11-26)
 
 These are current V2 gaps that are **not** V1-delta items. They are recorded so a
 future change does not treat an unused endpoint as delivered UI, or a deferred
@@ -417,6 +432,39 @@ read as an outage. Full context is in `docs/v2-ui/AUDIT.md` §6.1.
 | `POST /work/submissions/sync` | No web offline submission queue | Deferred; API exists for a future client |
 | Browser push registration | Settings registers, lists and removes browser devices through `push-sw.js`; delivery is signed with VAPID and needs both keys configured | Delivered; a native provider endpoint (`PUSH_ENDPOINT`) is still required for mobile |
 | `GET /talent/me/transcript` | Duplicate of the transcript read used by `/verification/transcript` | Leave unused; do not build a second transcript screen |
+| `GET /talent/students/{user_id}` | Admin uses `GET /talent/directory`; nothing reads one student's talent profile by id | Leave unused until a support-detail drawer needs it |
+| `GET /opportunities/{slug}/gaps` | Opportunity detail embeds the verdict, reasons and blocks, so nothing calls the standalone read | Leave unused; the embedded contract is authoritative |
+| `POST /skills/content/{paths,tasks}/bulk` | Built and tested; admin Content's selection bar only covers lessons | Add path/task selection to Content, or leave API-only |
+| `POST /verification/practical/submissions/bulk-review` | Built and tested; admin Review bulk only covers the work review queue | Add a practical-submission selection bar, or leave API-only |
+| `GET /onboarding/sessions/{session_id}/semesters` | Onboarding reads `/onboarding/sessions/current` only | Leave unused until a semester picker exists |
+| `REDIS_URL` | Declared in `app/core/config.py` but read nowhere; rate limits use the in-process store (F5) | Wire before running more than one API instance, or limits are per process |
+| `FLAG_EXTERNAL_OPPORTUNITIES` | Only widens the opportunities router guard; no external-listing feature sits behind it | Keep off at launch; it is a placeholder, not a hidden feature |
 
 Do not invent UI for these to make a checklist look complete. Close an edge by
 building the product decision behind it, or leave it documented as unused.
+
+## K. Re-audit (2026-11-26)
+
+Method: every path in the generated client (166) was searched for a caller in
+`apps/web/src`, `apps/admin/src` and `apps/mobile/src`; docs were checked against
+the code; the suites in Verification were re-run.
+
+- [x] **K1** Stale tracker state fixed: §I said "do not merge while undecided" and
+  I1/I2 were `[~]` although the delta is ported; this file pointed at a §K that did
+  not exist; the Verification block was from 2026-11-08.
+- [x] **K2** Bulk scope corrected in H5, `AUDIT.md` and `ROUTE-MAP.md`: admin calls
+  only the review-queue, payout-batch and lesson bulk endpoints.
+- [x] **K3** New unused edges recorded in §J: path/task bulk, practical
+  bulk-review, onboarding semesters, `REDIS_URL`, `FLAG_EXTERNAL_OPPORTUNITIES`.
+- [x] **K4** Web public-route test wait budget raised from 1.5 s to 5 s after a
+  reproducible slow lazy-import failure.
+- [!] **K5 — Mobile lockstep drift.** Mobile has no caller for matches,
+  eligibility, adaptive CBT, CBT history, course/topic detail, applications,
+  cohort invitations, password change, consent history, the re-consent gate or
+  date of birth. Signup/reset/onboarding/path link out to the web without the
+  ADR-0012 exception note. Decide port vs. written exception; port the re-consent
+  gate before store submission. Risk R16.
+- [ ] **K6** Wire `REDIS_URL` into the rate limiter before running more than one
+  API instance.
+- [ ] **K7** Add `prefers-contrast`/`forced-colors` styles and automated axe
+  checks (`AUDIT.md` §7).

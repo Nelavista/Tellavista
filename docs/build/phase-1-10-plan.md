@@ -250,25 +250,25 @@ started; it is an operational milestone, not a coding one.
 
 ---
 
-## Post-build V1 delta (2026-11-04)
+## Post-build V1 delta (ported 2026-11-08)
 
-V1 `main` added a product delta after Phases 1–10 were closed. It is **not** a
-defect in those phases, but it is new scope that the phase plan did not include:
+V1 `main` added a product delta after Phases 1–10 were closed. It was **not** a
+defect in those phases, but it was new scope the phase plan did not include. It is
+now ported and tested:
 
-| V1 addition | What it means for the phase plan |
+| V1 addition | Where it landed |
 |---|---|
-| African Languages Lab (9 categories, 94 skills, 10 tracks) | A content extension of Phase 2/3; needs a V2 seed and task/assessment support |
-| Language profile and language/tag fields | Identity + skills data that neither Phase 1 nor Phase 2 modelled |
-| Structured scored tasks and assessment gate | A new task family alongside V2's `TaskTemplate`/verification assessments |
-| Per-skill transcript/talent evidence | Extends Phase 3 and Phase 7 reads |
-| Talent language/level/status filters | Only relevant if V2 builds a talent-search surface; Phase 4 has the admin candidate list |
-| `/impact` public page | A Phase 0/public-surface addition after Gate 2; needs verified metrics |
-| FUTA official taxonomy | Phase 1 taxonomy content; V2's `Course` model must carry semester/source before import |
+| African Languages Lab (9 categories, 94 skills, 10 tracks) | Phase 2/3 content extension: seeded catalogue, hub, lessons, practice and assessments |
+| Language profile and language/tag fields | Phase 1/2 identity and skills data: `user_languages`, `/skills/languages` and server-side filters |
+| Structured scored tasks and assessment gate | Phase 2/3: deterministic task scoring and the scored-practice prerequisite |
+| Per-skill transcript/talent evidence | Phase 3 and Phase 7 reads |
+| Talent language/level/status filters | Admin Talent directory over `GET /talent/directory`; employer self-service stays dropped |
+| `/impact` public page | Public surface: live aggregates with an admin publish control |
+| FUTA official taxonomy | Phase 1 taxonomy content plus `Course` provenance and importer support |
 
-Porting this delta is tracked as **I1–I8** in `REMAINING_WORK.md`, with the same
-decision record in `docs/v2-ui/PARITY.md` §1.2. It is not a reason to reopen the
-completed phase exit criteria; it is a new, explicit decision before the launch
-merge.
+Porting is recorded as **I1–I8** in `REMAINING_WORK.md`, with the same decision
+record in `docs/v2-ui/PARITY.md` §1.2. It does not reopen the completed phase exit
+criteria. Career-track progress is the one product decision still open.
 
 ---
 
@@ -280,11 +280,15 @@ merge.
 | 2 | Maestro smoke on a dev build | 9 | code + device |
 | 3 | Run and record the load test on DEV (F6 remainder) | 10 | you + code |
 | 4 | Security review; beta; pilot; go/no-go; cutover | 10 | you |
-| 5 | V1 delta decision: port ALL/language profile/structured tasks/impact/FUTA, or explicitly drop them | post-build | you + code |
-| 6 | If ported, web + mobile + admin implementation and tests for §I | post-build | code |
+| 5 | Manual admin 2FA enrollment/recovery browser pass | 8 | you |
+| 6 | Set PostHog keys and VAPID pair per environment; confirm one page view, one exception and one push | 10 | you + code |
+| 7 | Manual accessibility and responsive browser pass | 10 | you |
+| 8 | Career-track progress product decision (the only open V1 parity item) | post-build | you |
+| 9 | Approved pricing amounts, testimonials, social URLs and team/campus photography | launch | you |
 
 Delivered since this list was written: B13, B14, the AI Data Annotation content
-(F7/G4) and the G1–G5 policy controls.
+(F7/G4), the G1–G5 policy controls, the 2026-11-04 V1 delta (I1–I8), the admin
+Talent directory, browser push and live Impact metrics with PostHog telemetry.
 
 The build status is tracked in `REMAINING_WORK.md`; UI readiness and the missing
 public/app/admin screens are tracked in `docs/v2-ui/AUDIT.md`. This document is
